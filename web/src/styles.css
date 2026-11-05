@@ -394,12 +394,7 @@ html[data-lang="pl"] .mcell .dnum {
 }
 
 .mchars > *:last-child {
-  margin-left: -13px;
-}
-
-.mchars > *:first-child {
-  position: relative;
-  z-index: 1;
+  margin-left: -8px;
 }
 
 .mcell .spr {
