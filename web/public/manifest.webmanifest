@@ -1,0 +1,11 @@
+{
+  "name": "ourcalendar",
+  "short_name": "ourcalendar",
+  "description": "Our shared workout schedule",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#F3F8F1",
+  "theme_color": "#1E6B3E",
+  "icons": [{ "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml" }]
+}

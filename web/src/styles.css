@@ -1,0 +1,188 @@
+:root {
+  --green: #2f9e5f;
+  --dark-green: #1e6b3e;
+  --bg: #f3f8f1;
+  --accent: #ffc93c;
+  --ink: #22301f;
+  --card: #ffffff;
+  --muted: #5c6f5a;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: system-ui, -apple-system, "Hiragino Sans", "Noto Sans JP", sans-serif;
+}
+
+a {
+  color: var(--dark-green);
+}
+
+.app {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 16px 16px 64px;
+}
+
+.header {
+  background: var(--dark-green);
+  color: #fff;
+  border-radius: 24px;
+  padding: 16px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.header h1 {
+  margin: 0;
+  font-size: 22px;
+}
+
+.clocks {
+  display: flex;
+  gap: 8px;
+}
+
+.clock-badge {
+  background: rgba(255, 255, 255, 0.16);
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.nav {
+  display: flex;
+  gap: 8px;
+  margin: 16px 0;
+}
+
+.nav a {
+  flex: 1;
+  text-align: center;
+  text-decoration: none;
+  background: var(--card);
+  border-radius: 999px;
+  padding: 10px;
+  font-weight: 600;
+  color: var(--dark-green);
+  border: 2px solid transparent;
+}
+
+.nav a.active {
+  border-color: var(--accent);
+  background: #fff8e1;
+}
+
+.card {
+  background: var(--card);
+  border-radius: 20px;
+  padding: 16px;
+  margin-bottom: 12px;
+  box-shadow: 0 1px 4px rgba(30, 107, 62, 0.12);
+}
+
+.pill-btn {
+  border: none;
+  border-radius: 999px;
+  padding: 10px 18px;
+  font-weight: 700;
+  cursor: pointer;
+  background: var(--green);
+  color: #fff;
+}
+
+.pill-btn.accent {
+  background: var(--accent);
+  color: #4a3400;
+}
+
+.pill-btn.ghost {
+  background: #e7f2e9;
+  color: var(--dark-green);
+}
+
+.pill-btn.danger {
+  background: #fde8e8;
+  color: #a33;
+}
+
+.badge {
+  display: inline-block;
+  border-radius: 999px;
+  padding: 3px 10px;
+  font-size: 12px;
+  font-weight: 700;
+  background: #e7f2e9;
+  color: var(--dark-green);
+}
+
+.badge.jogging {
+  background: #fff3c4;
+  color: #7a5b00;
+}
+
+.badge.general {
+  background: #e8eefb;
+  color: #35507a;
+}
+
+.dual {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+  flex-wrap: wrap;
+}
+
+.dual .mine {
+  font-size: 20px;
+  font-weight: 800;
+}
+
+.dual .theirs {
+  color: var(--muted);
+}
+
+.day-note {
+  background: var(--accent);
+  border-radius: 999px;
+  padding: 2px 10px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  border: 2px solid #dce8da;
+  border-radius: 14px;
+  padding: 10px 12px;
+  font-size: 15px;
+  margin: 4px 0 10px;
+  background: #fff;
+}
+
+label {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.muted {
+  color: var(--muted);
+  font-size: 13px;
+}
