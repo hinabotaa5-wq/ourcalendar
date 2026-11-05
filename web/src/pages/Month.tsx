@@ -120,6 +120,25 @@ export function MonthPage() {
           );
         })}
       </div>
+      <div className="legend">
+        <span className="litem">
+          <SproutSprite scale={2} />
+          {t("legendPlanned")}
+        </span>
+        <span className="litem">
+          <RunnerSprite scale={2} />
+          {t("legendJogging")}
+        </span>
+        <span className="litem">
+          <FlowerSprite scale={2} />
+          <StarSprite scale={1} />
+          {t("legendAllDone")}
+        </span>
+        <span className="litem">
+          <ZzzSprite scale={1} />
+          {t("legendRest")}
+        </span>
+      </div>
     </div>
   );
 }

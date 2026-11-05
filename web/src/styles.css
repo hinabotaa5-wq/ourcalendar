@@ -321,6 +321,21 @@ html[data-lang="pl"] .navbtn {
   gap: 3px;
 }
 
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px 12px;
+  margin-top: 6px;
+  font-size: 10px;
+  color: var(--muted);
+}
+
+.legend .litem {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
 .mhead {
   text-align: center;
   font-size: 10px;

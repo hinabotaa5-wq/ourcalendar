@@ -91,6 +91,10 @@ export interface Strings {
   loggedInAs: string;
   birthdayHinata: string;
   birthdaySimone: string;
+  legendPlanned: string;
+  legendJogging: string;
+  legendAllDone: string;
+  legendRest: string;
 }
 
 const EN: Strings = {
@@ -172,6 +176,10 @@ const EN: Strings = {
   loggedInAs: "Logged in as {name}",
   birthdayHinata: "Hinata's birthday",
   birthdaySimone: "Simone's birthday",
+  legendPlanned: "Planned",
+  legendJogging: "Jogging",
+  legendAllDone: "All done",
+  legendRest: "Rest",
 };
 
 const JA: Strings = {
@@ -253,6 +261,10 @@ const JA: Strings = {
   loggedInAs: "{name}でログイン中",
   birthdayHinata: "Hinataの誕生日",
   birthdaySimone: "Simoneの誕生日",
+  legendPlanned: "予定",
+  legendJogging: "ジョギング",
+  legendAllDone: "全部できた",
+  legendRest: "お休み",
 };
 
 const PL: Strings = {
@@ -334,6 +346,10 @@ const PL: Strings = {
   loggedInAs: "Zalogowano jako {name}",
   birthdayHinata: "Urodziny Hinaty",
   birthdaySimone: "Urodziny Simone",
+  legendPlanned: "Zaplanowane",
+  legendJogging: "Jogging",
+  legendAllDone: "Wszystko zrobione",
+  legendRest: "Odpoczynek",
 };
 
 export const STRINGS: Record<Lang, Strings> = { en: EN, ja: JA, pl: PL };
