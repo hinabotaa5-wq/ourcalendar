@@ -56,10 +56,10 @@ export function SettingsPage() {
       <div className="card">
         <h3 style={{ marginTop: 0 }}>{t("notifications")}</h3>
         <div className="row">
-          <button className="pill-btn" onClick={() => void enablePush()}>
+          <button className="gbtn" onClick={() => void enablePush()}>
             {t("enablePush")}
           </button>
-          <button className="pill-btn accent" onClick={() => void testPush()}>
+          <button className="gbtn accent" onClick={() => void testPush()}>
             {t("sendTest")}
           </button>
         </div>
@@ -72,7 +72,7 @@ export function SettingsPage() {
           <p key={s.id}>
             {s.role} · {s.id.slice(0, 8)}…{" "}
             <button
-              className="pill-btn danger"
+              className="gbtn danger"
               onClick={() =>
                 void api.revokeSession(s.id).then(() => {
                   setMsg(t("sessionRevoked"));

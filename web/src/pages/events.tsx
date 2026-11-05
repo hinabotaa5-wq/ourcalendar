@@ -43,11 +43,11 @@ export function EventCard({ e, role, onChange }: { e: CalEvent; role: Role | nul
   };
 
   return (
-    <div className="card">
-      <span className={`badge ${e.category === "Jogging" ? "jogging" : e.category === "General" ? "general" : ""}`}>
+    <div className="card evrow">
+      <span className="badge">
         {e.category}
       </span>{" "}
-      <span className="badge">{t(statusKey(e.status))}</span>
+      <span className={`badge ${e.status === "done" ? "done" : e.status === "rested" ? "rest" : ""}`}>{t(statusKey(e.status))}</span>
       <h3 style={{ margin: "8px 0" }}>{e.title}</h3>
       {e.durationMin >= ALL_DAY_MINUTES ? (
         <p>
@@ -81,10 +81,10 @@ export function EventCard({ e, role, onChange }: { e: CalEvent; role: Role | nul
         <button className="gbtn" disabled={!doneToday} onClick={() => void act("done")}>
           {t("done")}
         </button>
-        <button className="gbtn ghost" onClick={() => void act("rest")}>
+        <button className="gbtn rest" onClick={() => void act("rest")}>
           {t("restToday")}
         </button>
-        <button className="gbtn ghost" onClick={() => void setMoving((v) => !v)}>
+        <button className="gbtn accent" onClick={() => void setMoving((v) => !v)}>
           {t("move")}
         </button>
         <button className="gbtn danger" onClick={() => void remove()}>

@@ -8,7 +8,7 @@ import { SIMONE_TZ } from "../../../shared/types.js";
 import type { CalEvent } from "../../../shared/types.js";
 import { api } from "../api.js";
 import { useLang } from "../lang.js";
-import { CakeSprite, FlowerSprite, HinataSprite, RunnerSprite, SimoneSprite, SproutSprite, ZzzSprite } from "../sprites.js";
+import { CakeSprite, FlowerSprite, HinataSprite, RunnerSprite, SimoneSprite, SproutSprite, StarSprite, ZzzSprite } from "../sprites.js";
 import { visibleEvents } from "./events.js";
 
 const SUNDAY = Date.UTC(2026, 10, 1);
@@ -59,16 +59,16 @@ export function MonthPage() {
 
   return (
     <div>
-      <div className="row" style={{ marginBottom: 12 }}>
-        <button className="pill-btn ghost" onClick={() => setYm((v) => shiftMonth(v.year, v.month, -1))}>
-          ←
+      <div className="monthbar">
+        <button className="navbtn" onClick={() => setYm((v) => shiftMonth(v.year, v.month, -1))}>
+          ‹
         </button>
-        <span style={{ alignSelf: "center", fontWeight: 800 }}>{title}</span>
-        <button className="pill-btn ghost" onClick={() => setYm((v) => shiftMonth(v.year, v.month, 1))}>
-          →
+        <div className="mname pix">{title}</div>
+        <button className="navbtn" onClick={() => setYm((v) => shiftMonth(v.year, v.month, 1))}>
+          ›
         </button>
         <button
-          className="pill-btn accent"
+          className="navbtn todaybtn"
           onClick={() => {
             const d = new Date();
             setYm({ year: d.getFullYear(), month: d.getMonth() + 1 });
@@ -96,19 +96,24 @@ export function MonthPage() {
               to={`/day/${c.date}`}
               className={`mcell grass-${i % 2 === Math.floor(i / 7) % 2 ? "a" : "b"}${c.inMonth ? "" : " out"}${c.isToday ? " today" : ""}`}
             >
-              <span className="mnum">{Number(c.date.slice(8))}</span>
+              <span className="dnum">{Number(c.date.slice(8))}</span>
               {c.isToday && (
                 <span className="mchars">
-                  <HinataSprite w={30} />
-                  <SimoneSprite w={30} />
+                  <HinataSprite scale={3} />
+                  <SimoneSprite scale={3} />
                 </span>
               )}
-              <span className="mdots">
-                {birthday && <CakeSprite w={28} />}
-                {allDone && <FlowerSprite w={28} />}
-                {!allDone && hasJogging && <RunnerSprite w={32} />}
-                {!allDone && hasRested && <ZzzSprite />}
-                {!allDone && hasOpen && !hasJogging && <SproutSprite w={24} />}
+              <span className="spr">
+                {birthday && <CakeSprite w={30} />}
+                {allDone && (
+                  <>
+                    <FlowerSprite scale={3} />
+                    <StarSprite scale={2} />
+                  </>
+                )}
+                {!allDone && hasJogging && <RunnerSprite scale={3} />}
+                {!allDone && hasRested && <ZzzSprite scale={2} />}
+                {!allDone && hasOpen && !hasJogging && <SproutSprite scale={2} />}
               </span>
               {list.slice(0, 2).map((e) => (
                 <span key={e.id} className="mtitle">

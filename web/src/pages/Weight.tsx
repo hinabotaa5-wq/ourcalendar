@@ -47,7 +47,7 @@ export function WeightPage({ role }: { role: Role | null }) {
           {t("fieldWeightKg")}
           <input type="number" step="0.1" value={value} onChange={(e) => setValue(e.target.value)} placeholder="52.0" />
         </label>
-        <button className="pill-btn accent" onClick={() => void add()}>
+        <button className="gbtn accent" onClick={() => void add()}>
           {t("save")}
         </button>
       </div>

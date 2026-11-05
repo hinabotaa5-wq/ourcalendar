@@ -11,7 +11,7 @@ import { InvitePage } from "./pages/Invite.js";
 import { MonthPage } from "./pages/Month.js";
 import { SettingsPage } from "./pages/Settings.js";
 import { WeightPage } from "./pages/Weight.js";
-import { ChestSprite, SunflowerSprite } from "./sprites.js";
+import { ChestSprite, PixMap, SunflowerSprite } from "./sprites.js";
 import "./styles.css";
 
 function useNow(): Date {
@@ -34,15 +34,22 @@ function questTextKey(kind: string): "qClearAll" | "qJogOnce" | "qDoneCount" | "
   return "qClearAll";
 }
 
+function Mini({ state }: { state: "flower" | "zzz" | "sprout" }) {
+  const name = state === "flower" ? "flower" : state === "zzz" ? "zzz" : "sprout";
+  return <PixMap name={name} scale={2} label={state} />;
+}
+
 function QuestWindow() {
   const { t } = useLang();
   const { game } = useGame();
   if (!game?.quest) {
     return (
-      <div className="card rpg quest">
-        <p className="muted" style={{ margin: 0 }}>
-          {t("questTitle")}: {t("noQuest")}
-        </p>
+      <div className="window quest">
+        <ChestSprite open={false} scale={3} />
+        <div className="qtext">
+          <div className="qtitle pix">{t("questTitle")}</div>
+          <div className="qbody">{t("noQuest")}</div>
+        </div>
       </div>
     );
   }
@@ -55,30 +62,21 @@ function QuestWindow() {
           state: (i < q.progress.done ? "flower" : "sprout") as "flower" | "sprout",
         }));
   return (
-    <div className="card rpg quest">
-      <div className="quest-row">
-        <ChestSprite open={q.progress.achieved} />
-        <div>
-          <strong>{t("questTitle")}</strong>
-          <p style={{ margin: "4px 0" }}>{t(questTextKey(q.kind), { n: q.progress.target })}</p>
-          <div className="qminis">
-            {minis.map((m) => (
-              <span
-                key={m.id}
-                className={`qmini ${m.state === "flower" ? "flower" : m.state === "zzz" ? "zzz" : ""}`}
-                title={m.state}
-              >
-                {m.state === "flower" ? "✿" : m.state === "zzz" ? "z" : ""}
-              </span>
-            ))}
-          </div>
-          {q.progress.achieved && (
-            <p style={{ margin: "4px 0 0" }}>
-              <strong>
-                {t("questComplete")} {q.bonusAwarded ? t("questBonus") : ""}
-              </strong>
-            </p>
-          )}
+    <div className="window quest">
+      <ChestSprite open={q.progress.achieved} scale={3} />
+      <div className="qtext">
+        <div className="qtitle pix">{t("questTitle")}</div>
+        <div className="qbody">{t(questTextKey(q.kind), { n: q.progress.target })}</div>
+        <div className="qprog">
+          {q.progress.done} / {q.progress.target}
+          {q.progress.achieved ? ` — ${t("questComplete")}${q.bonusAwarded ? ` ${t("questBonus")}` : ""}` : ""}
+        </div>
+        <div className="qpips">
+          {minis.map((m) => (
+            <span key={m.id} className={`pip${m.state === "flower" ? " clear" : ""}`} title={m.state}>
+              <Mini state={m.state} />
+            </span>
+          ))}
         </div>
       </div>
     </div>
@@ -91,10 +89,12 @@ function LevelUpVeil() {
   if (!leveledUp) return null;
   return (
     <div className="lvup-veil" onClick={dismissLevelUp}>
-      <div className="rpg lvup-box">
-        <SunflowerSprite />
-        <h2 style={{ margin: 0 }}>{t("levelUpTitle")}</h2>
-        <button className="gbtn accent" onClick={dismissLevelUp}>
+      <div className="lvup-card">
+        <div className="sunrow">
+          <SunflowerSprite scale={5} />
+        </div>
+        <div className="big pix">{t("levelUpTitle")}</div>
+        <button className="pbtn done" onClick={dismissLevelUp}>
           OK
         </button>
       </div>
@@ -133,52 +133,54 @@ function Shell() {
 
   return (
     <div className="app">
-      <header className="header">
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12 }}>
-          <h1>ourcalendar</h1>
-          <div className="clocks">
-            <span className="clock-badge">
-              {t("timeLabelHinata")} {clock(now, HINATA_TZ)}
-            </span>
-            <span className="clock-badge">
-              {t("timeLabelSimone")} {clock(now, SIMONE_TZ)}
-            </span>
+      <header>
+        <div className="logo pix">
+          our<span>calendar</span>
+        </div>
+        <div className="clocks">
+          <div className="clock">
+            {t("timeLabelHinata")}
+            <b>{clock(now, HINATA_TZ)}</b>
+          </div>
+          <div className="clock">
+            {t("timeLabelSimone")}
+            <b>{clock(now, SIMONE_TZ)}</b>
           </div>
         </div>
-        {role && (
-          <div style={{ marginTop: 8 }}>
-            <span className="clock-badge">{t("loggedInAs", { name: role === "hinata" ? "Hinata" : "Simone" })}</span>
-          </div>
-        )}
-        {lvl && (
-          <div style={{ marginTop: 10 }}>
-            <div className="xpline">
-              <strong>
-                XP {game?.totalXp ?? 0} · {t("levelName")} {lvl.level}
-              </strong>
-              <span>{t("xpToNext", { n: lvl.remaining })}</span>
-            </div>
+      </header>
+      {role && (
+        <p className="loginline">
+          {t("loggedInAs", { name: role === "hinata" ? "Hinata" : "Simone" })}
+        </p>
+      )}
+      {lvl && (
+        <div className="stats">
+          <div className="lvbadge pix">Lv.{lvl.level}</div>
+          <div className="xpwrap">
             <div className="xpbar">
               {Array.from({ length: segs }, (_, i) => (
-                <span key={i} className={`seg${i < filled ? " full" : ""}`} />
+                <i key={i} className={i < filled ? "on" : ""} />
               ))}
             </div>
+            <div className="xpnum">
+              XP {game?.totalXp ?? 0} · {t("levelName")} {lvl.level} · {t("xpToNext", { n: lvl.remaining })}
+            </div>
           </div>
-        )}
-      </header>
+        </div>
+      )}
       {role && <QuestWindow />}
       {role && (
         <nav className="nav">
-          <Link to="/" className={loc.pathname === "/" ? "active" : ""}>
+          <Link to="/" className={`navbtn${loc.pathname === "/" ? " active" : ""}`}>
             {t("navMonth")}
           </Link>
-          <Link to="/week" className={loc.pathname === "/week" ? "active" : ""}>
+          <Link to="/week" className={`navbtn${loc.pathname === "/week" ? " active" : ""}`}>
             {t("navWeek")}
           </Link>
-          <Link to="/weight" className={loc.pathname === "/weight" ? "active" : ""}>
+          <Link to="/weight" className={`navbtn${loc.pathname === "/weight" ? " active" : ""}`}>
             {t("navWeight")}
           </Link>
-          <Link to="/settings" className={loc.pathname === "/settings" ? "active" : ""}>
+          <Link to="/settings" className={`navbtn${loc.pathname === "/settings" ? " active" : ""}`}>
             {t("navSettings")}
           </Link>
         </nav>

@@ -43,13 +43,13 @@ export function CalendarPage({ role }: { role: Role | null }) {
   return (
     <div>
       <div className="row" style={{ marginBottom: 12 }}>
-        <button className="pill-btn ghost" onClick={() => setOffset((o) => o - 1)}>
+        <button className="navbtn" onClick={() => setOffset((o) => o - 1)}>
           {t("prevWeek")}
         </button>
         <span className="muted" style={{ alignSelf: "center" }}>
           {t("weekOf", { date: range.label })}
         </span>
-        <button className="pill-btn ghost" onClick={() => setOffset((o) => o + 1)}>
+        <button className="navbtn" onClick={() => setOffset((o) => o + 1)}>
           {t("nextWeek")}
         </button>
       </div>
