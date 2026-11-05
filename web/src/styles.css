@@ -129,6 +129,10 @@ html[data-lang="pl"] .navbtn {
   .clock .cname {
     font-size: 10px;
   }
+
+  .monthbar {
+    gap: 5px;
+  }
 }
 
 .clock b {
@@ -295,6 +299,12 @@ html[data-lang="pl"] .navbtn {
 
 .monthbar .navbtn {
   flex: none;
+}
+
+.monthbar .chevbtn {
+  flex: none;
+  width: 44px;
+  text-align: center;
 }
 
 .monthbar .mname {
@@ -541,6 +551,7 @@ html[data-lang="pl"] .pbtn {
 input,
 select,
 textarea {
+  box-sizing: border-box;
   width: 100%;
   border: 3px solid var(--ink);
   border-radius: 4px;
@@ -550,6 +561,11 @@ textarea {
   background: #fff;
   font-family: inherit;
   font-weight: 700;
+}
+
+input[type="datetime-local"] {
+  min-width: 0;
+  max-width: 100%;
 }
 
 label {

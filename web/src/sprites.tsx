@@ -10,8 +10,8 @@ const PAL: Record<string, string> = {
 };
 
 const MAPS: Record<string, string[]> = {
-  heroH: ["............","..KKKKKKK...",".KGGGGGGGK..",".KGWWGGGGK..","..SSSSSSS...","..SKSSKSK...","...SSSSS....","..KDDDDDK...",".KDKDDDKDK..",".K.KDDDK.K..","...BBBBB....","...BB.BB....","...BB.BB....","..TTT.TTT..."],
-  heroS: ["............",".....YY.....","....YYYY....","...HHHHHH...","..HHHHHHHH..","..SSSSSSSS..","..SKSSKSSS..","..SSSSSSSS..","...GGGGGG...","..KGGGGGGK..","..KGGGGGGK..","....GGGG....","....S..S....","...TT..TT..."],
+  heroH: ["............","...KKKKKKK..","..KGGGGGGGK.","..KGGGGWWGK.","...SSSSSSS..","...KSKSSKS..","....SSSSS...","...KDDDDDK..","..KDKDDDKDK.","..K.KDDDK.K.","....BBBBB...","....BB.BB...","....BB.BB...","...TTT.TTT.."],
+  heroS: ["............",".....YY.....","....YYYY....","...HHHHHH...","..HHHHHHHH..","..SSSSSSSS..","..SSSKSSKS..","..SSSSSSSS..","...GGGGGG...","..KGGGGGGK..","..KGGGGGGK..","....GGGG....","....S..S....","...TT..TT..."],
   flower: [".....P.P....","....PPPPP...",".P..PYYP..P.","....PPPPP...",".....P.P....","......G.....","..L..G......","...L.G......","....GG......",".....G......"],
   sunflower: ["....Y.Y.Y...","...YYYYYY...","..YYNNNNYY..","..YNNNNNNY..","..YYNNNNYY..","...YYYYYY...","....Y.Y.Y...","......G.....","..L..G..L...","....GG......",".....G......"],
   zzz: ["..........BBB.","...........B..","..........BBB.",".....BBBBB....","........B.....",".......B......",".....BBBBB....","BBBBBBB.......","....BB........","...B..........",".BB...........","BBBBBBB......."],

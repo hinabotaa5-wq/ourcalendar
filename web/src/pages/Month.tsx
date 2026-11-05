@@ -60,11 +60,11 @@ export function MonthPage() {
   return (
     <div>
       <div className="monthbar">
-        <button className="navbtn" onClick={() => setYm((v) => shiftMonth(v.year, v.month, -1))}>
+        <button className="navbtn chevbtn" onClick={() => setYm((v) => shiftMonth(v.year, v.month, -1))}>
           ‹
         </button>
         <div className="mname pix">{title}</div>
-        <button className="navbtn" onClick={() => setYm((v) => shiftMonth(v.year, v.month, 1))}>
+        <button className="navbtn chevbtn" onClick={() => setYm((v) => shiftMonth(v.year, v.month, 1))}>
           ›
         </button>
         <button
@@ -115,11 +115,6 @@ export function MonthPage() {
                 {!allDone && hasRested && <ZzzSprite scale={2} />}
                 {!allDone && hasOpen && !hasJogging && <SproutSprite scale={2} />}
               </span>
-              {list.slice(0, 2).map((e) => (
-                <span key={e.id} className="mtitle">
-                  {e.title}
-                </span>
-              ))}
               {list.length > 2 && <span className="mtitle">+{list.length - 2}</span>}
             </Link>
           );
