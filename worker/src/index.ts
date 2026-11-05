@@ -1,5 +1,7 @@
 import { isSimoneReminderMinute, isSimoneWeightMinute } from "../../shared/time.js";
-import type { CalEvent, EventCategory, EventStatus, Role } from "../../shared/types.js";
+import type { CalEvent, EventCategory, EventStatus, Lang, Role } from "../../shared/types.js";
+import { isLang } from "../../shared/types.js";
+import { pushText } from "../../shared/push-texts.js";
 import {
   clearSessionCookie,
   getSessionRole,
@@ -13,7 +15,7 @@ import {
   type Env,
 } from "./auth.js";
 import { sendPush } from "./push.js";
-import { runDailyReminder, runWeightReminder } from "./reminders.js";
+import { getLanguage, runDailyReminder, runWeightReminder } from "./reminders.js";
 
 function validCategory(c: unknown): c is EventCategory {
   return c === "Workout" || c === "Jogging" || c === "General";
@@ -258,11 +260,33 @@ export async function handleFetch(req: Request, env: Env): Promise<Response> {
       .bind(me.role)
       .all<{ endpoint: string; p256dh: string; auth: string }>();
     const targets = rows.results ?? [];
+    const lang = await getLanguage(env, me.role);
+    const payload = { ...pushText(lang, "test"), url: "/" };
     let sent = 0;
     for (const t of targets) {
-      if (await sendPush(env, t, { title: "ourcalendar test", body: "Push works 🎉", url: "/" })) sent++;
+      if (await sendPush(env, t, payload)) sent++;
     }
     return json({ ok: true, sent, targets: targets.length });
+  }
+
+  if (path === "/api/settings/language" && req.method === "GET") {
+    const me = await requireRole(req, env);
+    if (me instanceof Response) return me;
+    return json({ language: await getLanguage(env, me.role) });
+  }
+
+  if (path === "/api/settings/language" && req.method === "PUT") {
+    const me = await requireRole(req, env);
+    if (me instanceof Response) return me;
+    const { language } = (await req.json().catch(() => ({}))) as { language?: unknown };
+    if (!isLang(language)) return json({ error: "bad language" }, 400);
+    const lang: Lang = language;
+    await env.DB.prepare(
+      "INSERT INTO users (role, language) VALUES (?, ?) ON CONFLICT(role) DO UPDATE SET language = excluded.language",
+    )
+      .bind(me.role, lang)
+      .run();
+    return json({ ok: true });
   }
 
   if (path === "/api/push/vapid-key") {

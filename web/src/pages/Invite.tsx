@@ -2,8 +2,10 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import type { Role } from "../../../shared/types.js";
 import { api } from "../api.js";
+import { useLang } from "../lang.js";
 
 export function InvitePage({ onDone }: { onDone: (r: Role) => void }) {
+  const { t } = useLang();
   const { token } = useParams();
   const nav = useNavigate();
   const [err, setErr] = useState("");
@@ -22,16 +24,24 @@ export function InvitePage({ onDone }: { onDone: (r: Role) => void }) {
   if (token === "sample" || !token) {
     return (
       <div className="card">
-        <h3>You're not signed in</h3>
-        <p className="muted">Open your personal invite link on this device to join. Each link works once.</p>
+        <h3>{t("notSignedIn")}</h3>
+        <p className="muted">{t("inviteHint")}</p>
       </div>
     );
   }
 
   return (
     <div className="card">
-      <h3>Joining…</h3>
-      {err ? <p className="muted">Invite failed: {err}</p> : <p className="muted">Redeeming your invite link…</p>}
+      <h3>{t("joining")}</h3>
+      {err ? (
+        <p className="muted">
+          {t("inviteFailed")} {err}
+        </p>
+      ) : (
+        <p className="muted">{t("redeeming")}</p>
+      )}
     </div>
   );
 }
+
+

@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import type { Role, WeightEntry } from "../../../shared/types.js";
 import { api } from "../api.js";
+import { useLang } from "../lang.js";
 
 export function WeightPage({ role }: { role: Role | null }) {
+  const { t } = useLang();
   const [weights, setWeights] = useState<WeightEntry[] | null>(null);
   const [blocked, setBlocked] = useState(false);
   const [value, setValue] = useState("");
@@ -30,8 +32,8 @@ export function WeightPage({ role }: { role: Role | null }) {
   if (blocked || role !== "simone") {
     return (
       <div className="card">
-        <h3>Weight</h3>
-        <p className="muted">Only Simone can view weight entries. Ask Simone to open this page on her device.</p>
+        <h3>{t("weightTitle")}</h3>
+        <p className="muted">{t("weightOnlySimone")}</p>
       </div>
     );
   }
@@ -39,23 +41,23 @@ export function WeightPage({ role }: { role: Role | null }) {
   return (
     <div>
       <div className="card">
-        <h3 style={{ marginTop: 0 }}>Saturday check-in</h3>
-        <p className="muted">Simone enters her weight every Saturday at 19:00 (her time).</p>
+        <h3 style={{ marginTop: 0 }}>{t("saturdayCheckin")}</h3>
+        <p className="muted">{t("saturdayPrompt")}</p>
         <label>
-          Weight (kg)
+          {t("fieldWeightKg")}
           <input type="number" step="0.1" value={value} onChange={(e) => setValue(e.target.value)} placeholder="52.0" />
         </label>
         <button className="pill-btn accent" onClick={() => void add()}>
-          Save
+          {t("save")}
         </button>
       </div>
       <div className="card">
-        <h3 style={{ marginTop: 0 }}>History (Simone only)</h3>
+        <h3 style={{ marginTop: 0 }}>{t("historySimone")}</h3>
         {weights?.map((w) => (
           <p key={w.id}>
             {w.recordedAtUtc.slice(0, 10)} — <strong>{w.valueKg} kg</strong>
           </p>
-        )) ?? <p className="muted">Loading…</p>}
+        )) ?? <p className="muted">{t("loading")}</p>}
       </div>
     </div>
   );

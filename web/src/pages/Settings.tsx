@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import type { Role } from "../../../shared/types.js";
 import { api, urlBase64ToU8 } from "../api.js";
+import { langOptions, useLang } from "../lang.js";
 
 export function SettingsPage() {
+  const { lang, setLang, t } = useLang();
   const [sessions, setSessions] = useState<{ id: string; role: Role; createdAt: string; lastSeenAt: string }[]>([]);
   const [msg, setMsg] = useState("");
 
@@ -15,7 +17,7 @@ export function SettingsPage() {
     try {
       const perm = await Notification.requestPermission();
       if (perm !== "granted") {
-        setMsg("Notification permission denied.");
+        setMsg(t("pushDenied"));
         return;
       }
       const { publicKey } = await api.vapidKey();
@@ -25,34 +27,47 @@ export function SettingsPage() {
         applicationServerKey: urlBase64ToU8(publicKey).buffer as ArrayBuffer,
       });
       await api.subscribePush(sub.toJSON());
-      setMsg("Push enabled on this device.");
+      setMsg(t("pushEnabled"));
     } catch (e) {
-      setMsg(`Push setup failed: ${(e as Error).message}`);
+      setMsg(`${t("pushFailed")} ${(e as Error).message}`);
     }
   };
 
   const testPush = async () => {
     const r = await api.testPush();
-    setMsg(`Test sent to ${r.sent}/${r.targets} subscription(s).`);
+    setMsg(t("testSent", { sent: r.sent, targets: r.targets }));
   };
 
   return (
     <div>
       <div className="card">
-        <h3 style={{ marginTop: 0 }}>Notifications</h3>
+        <h3 style={{ marginTop: 0 }}>{t("language")}</h3>
+        <label>
+          {t("language")}
+          <select value={lang} onChange={(e) => setLang(e.target.value as typeof lang)}>
+            {langOptions().map((o) => (
+              <option key={o.value} value={o.value}>
+                {o.label}
+              </option>
+            ))}
+          </select>
+        </label>
+      </div>
+      <div className="card">
+        <h3 style={{ marginTop: 0 }}>{t("notifications")}</h3>
         <div className="row">
           <button className="pill-btn" onClick={() => void enablePush()}>
-            Enable push
+            {t("enablePush")}
           </button>
           <button className="pill-btn accent" onClick={() => void testPush()}>
-            Send test
+            {t("sendTest")}
           </button>
         </div>
         {msg && <p className="muted">{msg}</p>}
       </div>
       <div className="card">
-        <h3 style={{ marginTop: 0 }}>Sessions</h3>
-        <p className="muted">Revoke any session (including the other device) here.</p>
+        <h3 style={{ marginTop: 0 }}>{t("sessions")}</h3>
+        <p className="muted">{t("sessionsHint")}</p>
         {sessions.map((s) => (
           <p key={s.id}>
             {s.role} · {s.id.slice(0, 8)}…{" "}
@@ -60,12 +75,12 @@ export function SettingsPage() {
               className="pill-btn danger"
               onClick={() =>
                 void api.revokeSession(s.id).then(() => {
-                  setMsg("Session revoked.");
+                  setMsg(t("sessionRevoked"));
                   load();
                 })
               }
             >
-              Revoke
+              {t("revoke")}
             </button>
           </p>
         ))}

@@ -5,6 +5,6 @@ export default tseslint.config(
   js.configs.recommended,
   ...tseslint.configs.recommended,
   {
-    ignores: ["**/dist/**", "web/dist/**", "web/public/sw.js"],
+    ignores: ["**/dist/**", "web/dist/**", "web/public/sw.js", "**/.wrangler/**", "**/.dev.vars"],
   },
 );

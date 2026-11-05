@@ -1,4 +1,4 @@
-import type { CalEvent, Role, WeightEntry } from "../../shared/types.js";
+import type { CalEvent, Lang, Role, WeightEntry } from "../../shared/types.js";
 
 async function req<T>(path: string, init?: RequestInit): Promise<T> {
   const res = await fetch(path, { credentials: "include", ...init });
@@ -65,6 +65,13 @@ export const api = {
       body: JSON.stringify({ endpoint: sub.endpoint, keys: sub.keys }),
     }),
   testPush: () => req<{ ok: boolean; sent: number; targets: number }>("/api/push/test", { method: "POST" }),
+  language: () => req<{ language: Lang }>("/api/settings/language"),
+  setLanguage: (language: Lang) =>
+    req<{ ok: boolean }>("/api/settings/language", {
+      method: "PUT",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ language }),
+    }),
 };
 
 export function urlBase64ToU8(s: string): Uint8Array {

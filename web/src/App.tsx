@@ -3,10 +3,14 @@ import { Link, Route, Routes, useLocation, useNavigate } from "react-router-dom"
 import { HINATA_TZ, SIMONE_TZ } from "../../shared/types.js";
 import { api } from "./api.js";
 import type { Role } from "../../shared/types.js";
+import { LangProvider, useLang } from "./lang.js";
 import { CalendarPage } from "./pages/Calendar.js";
+import { DayPage } from "./pages/Day.js";
 import { InvitePage } from "./pages/Invite.js";
+import { MonthPage } from "./pages/Month.js";
 import { SettingsPage } from "./pages/Settings.js";
 import { WeightPage } from "./pages/Weight.js";
+import "./styles.css";
 
 function useNow(): Date {
   const [now, setNow] = useState(() => new Date());
@@ -21,7 +25,8 @@ function clock(date: Date, tz: string): string {
   return new Intl.DateTimeFormat("en-GB", { timeZone: tz, hour: "2-digit", minute: "2-digit" }).format(date);
 }
 
-export function App() {
+function Shell() {
+  const { t } = useLang();
   const [role, setRole] = useState<Role | null | undefined>(undefined);
   const now = useNow();
   const loc = useLocation();
@@ -50,22 +55,35 @@ export function App() {
       {role && (
         <nav className="nav">
           <Link to="/" className={loc.pathname === "/" ? "active" : ""}>
-            Calendar
+            {t("navMonth")}
+          </Link>
+          <Link to="/week" className={loc.pathname === "/week" ? "active" : ""}>
+            {t("navWeek")}
           </Link>
           <Link to="/weight" className={loc.pathname === "/weight" ? "active" : ""}>
-            Weight
+            {t("navWeight")}
           </Link>
           <Link to="/settings" className={loc.pathname === "/settings" ? "active" : ""}>
-            Settings
+            {t("navSettings")}
           </Link>
         </nav>
       )}
       <Routes>
-        <Route path="/" element={<CalendarPage role={role ?? null} />} />
+        <Route path="/" element={<MonthPage />} />
+        <Route path="/week" element={<CalendarPage role={role ?? null} />} />
+        <Route path="/day/:date" element={<DayPage role={role ?? null} />} />
         <Route path="/weight" element={<WeightPage role={role ?? null} />} />
         <Route path="/settings" element={<SettingsPage />} />
         <Route path="/invite/:token" element={<InvitePage onDone={(r) => setRole(r)} />} />
       </Routes>
     </div>
+  );
+}
+
+export function App() {
+  return (
+    <LangProvider>
+      <Shell />
+    </LangProvider>
   );
 }

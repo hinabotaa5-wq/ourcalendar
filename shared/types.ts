@@ -9,6 +9,13 @@ export type Role = "hinata" | "simone";
 export type EventCategory = "Workout" | "Jogging" | "General";
 export type EventStatus = "scheduled" | "done" | "rested" | "moved";
 
+export type Lang = "en" | "ja" | "pl";
+export const LANGS: Lang[] = ["en", "ja", "pl"];
+
+export function isLang(v: unknown): v is Lang {
+  return v === "en" || v === "ja" || v === "pl";
+}
+
 export interface CalEvent {
   id: string;
   title: string;

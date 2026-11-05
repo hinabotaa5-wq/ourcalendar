@@ -186,3 +186,76 @@ label {
   color: var(--muted);
   font-size: 13px;
 }
+
+.mgrid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+}
+
+.mhead {
+  text-align: center;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--muted);
+  padding: 4px 0;
+}
+
+.mcell {
+  background: var(--card);
+  border-radius: 14px;
+  min-height: 64px;
+  padding: 6px 4px;
+  text-decoration: none;
+  color: var(--ink);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  overflow: hidden;
+}
+
+.mcell.out {
+  opacity: 0.45;
+}
+
+.mcell.today {
+  outline: 3px solid var(--accent);
+}
+
+.mnum {
+  font-weight: 800;
+  font-size: 14px;
+}
+
+.mdots {
+  display: flex;
+  gap: 3px;
+  align-items: center;
+  min-height: 8px;
+}
+
+.mdot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--green);
+}
+
+.mdot.jog {
+  background: #e0a800;
+}
+
+.mdot.gen {
+  background: #7b93c4;
+}
+
+.mtitle {
+  font-size: 10px;
+  line-height: 1.2;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--muted);
+}

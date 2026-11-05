@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { CalEvent } from "../shared/types.js";
-import { visibleEvents } from "../web/src/pages/Calendar.js";
+import { visibleEvents } from "../web/src/pages/events.js";
 
 function row(partial: Partial<CalEvent>): CalEvent {
   return {
