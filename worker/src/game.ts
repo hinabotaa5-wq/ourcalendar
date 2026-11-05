@@ -63,11 +63,13 @@ function questEventsFrom(rows: { id: string; category: string; status: string; s
 }
 
 /**
- * Ensure the current week's quest exists, compute progress, and (only when
- * grantBonus is true, i.e. triggered by a Done action) award the weekly
- * +50 XP bonus on first achievement. XP otherwise enters only via Done.
+ * Ensure the current week's quest exists, compute progress, and award the
+ * weekly +50 XP bonus when the quest is achieved. The `quest:<weekKey>` key
+ * keeps it to once per week, and only the current week is ever evaluated so
+ * past weeks are never retroactively paid. Per-event exercise XP still
+ * enters only via Done; the bonus is a separate allowance.
  */
-export async function syncQuest(env: Env, now: Date, grantBonus: boolean): Promise<GameView> {
+export async function syncQuest(env: Env, now: Date): Promise<GameView> {
   const simoneLang = await getLanguage(env, "simone");
   const ws = LOCALES[simoneLang].weekStart;
   const start = weekStartUtc(now, ws);
@@ -106,7 +108,7 @@ export async function syncQuest(env: Env, now: Date, grantBonus: boolean): Promi
     return { totalXp: totalRow.total_xp, level: levelForXp(totalRow.total_xp), quest: null };
   }
   const progress = questProgress(kind, events);
-  if (progress.achieved && grantBonus) {
+  if (progress.achieved) {
     await addXp(env, `quest:${key}`, QUEST_BONUS_XP);
   }
   const finalRow = await getGameRow(env);

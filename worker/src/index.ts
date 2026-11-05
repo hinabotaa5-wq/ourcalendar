@@ -177,7 +177,7 @@ export async function handleFetch(req: Request, env: Env): Promise<Response> {
     }
     if (req.method === "DELETE" && !eventMatch[2]) {
       await env.DB.prepare("DELETE FROM events WHERE id = ?").bind(id).run();
-      await syncQuest(env, new Date(), false);
+      await syncQuest(env, new Date());
       return json({ ok: true });
     }
     if (req.method === "POST" && eventMatch[2]) {
@@ -217,7 +217,7 @@ export async function handleFetch(req: Request, env: Env): Promise<Response> {
       if (status === "done") {
         await addXp(env, `done:${id}`, xpForDone(target.category));
       }
-      const game = await syncQuest(env, new Date(), status === "done");
+      const game = await syncQuest(env, new Date());
       return json({ ok: true, status, game });
     }
   }
@@ -225,7 +225,7 @@ export async function handleFetch(req: Request, env: Env): Promise<Response> {
   if (path === "/api/game" && req.method === "GET") {
     const me = await requireRole(req, env);
     if (me instanceof Response) return me;
-    return json(await syncQuest(env, new Date(), false));
+    return json(await syncQuest(env, new Date()));
   }
 
   if (path === "/api/weights" && req.method === "GET") {

@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { doneAllowedFor } from "../worker/src/game.js";
+import { weekStartUtc } from "../shared/game.js";
 import { handleFetch } from "../worker/src/index.js";
 import type { Env } from "../worker/src/auth.js";
 
@@ -164,6 +165,36 @@ describe("done XP and today-only rule", () => {
     const gen = await handleFetch(req("/api/events/gen/action", "POST", { action: "done" }), env);
     expect(gen.status).toBe(200);
     expect(await gameTotal(db)).toBe(g1.game.totalXp);
+  });
+
+  it("awards the weekly bonus once on rest-only clear_all, never more", async () => {
+    const start = weekStartUtc(new Date(), 0);
+    const sat = `${new Date(start.getTime() + 6 * 86400000).toISOString().slice(0, 10)}T03:00:00.000Z`;
+    const { db, game } = fakeDb("simone", [seedEv("w1", "Workout", sat), seedEv("w2", "Workout", sat)]);
+    game.lastQuestKind = "done_count";
+    const env = { ...baseEnv, DB: db };
+    const q0 = (await (await handleFetch(req("/api/game", "GET"), env)).json()) as {
+      totalXp: number;
+      quest: { kind: string; progress: { achieved: boolean } };
+    };
+    expect(q0.quest.kind).toBe("clear_all");
+    expect(q0.quest.progress.achieved).toBe(false);
+    expect(q0.totalXp).toBe(0);
+
+    await handleFetch(req("/api/events/w1/action", "POST", { action: "rest" }), env);
+    expect(await gameTotal(db)).toBe(0);
+    await handleFetch(req("/api/events/w2/action", "POST", { action: "rest" }), env);
+    expect(await gameTotal(db)).toBe(50);
+
+    const g1 = (await (await handleFetch(req("/api/game", "GET"), env)).json()) as {
+      totalXp: number;
+      quest: { progress: { achieved: boolean }; bonusAwarded: boolean };
+    };
+    expect(g1.quest.progress.achieved).toBe(true);
+    expect(g1.quest.bonusAwarded).toBe(true);
+    await handleFetch(req("/api/events/w2/action", "POST", { action: "rest" }), env);
+    expect(await gameTotal(db)).toBe(50);
+    expect(await gameTotal(db)).toBe(50);
   });
 
   it("judges today in the pressing player's own timezone", async () => {
