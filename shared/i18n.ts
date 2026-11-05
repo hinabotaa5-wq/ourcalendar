@@ -52,6 +52,7 @@ export interface Strings {
   fieldWeightKg: string;
   save: string;
   historySimone: string;
+  noWeights: string;
   loading: string;
   notifications: string;
   enablePush: string;
@@ -137,6 +138,7 @@ const EN: Strings = {
   fieldWeightKg: "Weight (kg)",
   save: "Save",
   historySimone: "Only Simone can see these records",
+  noWeights: "No weight records yet.",
   loading: "Loading…",
   notifications: "Notifications",
   enablePush: "Enable push",
@@ -222,6 +224,7 @@ const JA: Strings = {
   fieldWeightKg: "体重（kg）",
   save: "保存",
   historySimone: "Simoneしか記録は見れません",
+  noWeights: "まだ体重の記録がありません。",
   loading: "読み込み中…",
   notifications: "通知",
   enablePush: "プッシュ通知を有効にする",
@@ -307,6 +310,7 @@ const PL: Strings = {
   fieldWeightKg: "Waga (kg)",
   save: "Zapisz",
   historySimone: "Tylko Simone może zobaczyć te zapisy",
+  noWeights: "Brak zapisów wagi.",
   loading: "Ładowanie…",
   notifications: "Powiadomienia",
   enablePush: "Włącz powiadomienia",
