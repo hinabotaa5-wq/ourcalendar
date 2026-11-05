@@ -45,7 +45,7 @@ export function WeightPage({ role }: { role: Role | null }) {
         <p className="muted">{t("saturdayPrompt")}</p>
         <label>
           {t("fieldWeightKg")}
-          <input type="number" step="0.1" value={value} onChange={(e) => setValue(e.target.value)} placeholder="52.0" />
+          <input type="number" step="0.1" value={value} onChange={(e) => setValue(e.target.value)} />
         </label>
         <button className="gbtn accent" onClick={() => void add()}>
           {t("save")}
