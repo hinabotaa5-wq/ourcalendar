@@ -68,6 +68,10 @@ export function zonedDateKey(isoUtc: string, timeZone: string): string {
   return formatInZone(isoUtc, timeZone).date;
 }
 
+export function zonedDateOf(isoUtc: string, role: Role): string {
+  return zonedDateKey(isoUtc, TIME_ZONES[role]);
+}
+
 export function isSimoneReminderMinute(nowUtc: Date): boolean {
   const p = partsInZone(nowUtc, SIMONE_TZ);
   return p.hh === 15;

@@ -259,3 +259,250 @@ label {
   text-overflow: ellipsis;
   color: var(--muted);
 }
+
+/* ---- pixel game theme ---- */
+
+.px-font,
+h1,
+h2,
+h3,
+.mnum,
+.clock-badge,
+.day-note {
+  font-family: "Press Start 2P", "DotGothic16", monospace;
+}
+
+html[data-lang="pl"] body,
+html[data-lang="pl"] .px-font,
+html[data-lang="pl"] h1,
+html[data-lang="pl"] h2,
+html[data-lang="pl"] h3,
+html[data-lang="pl"] .mnum,
+html[data-lang="pl"] .clock-badge {
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.px {
+  image-rendering: pixelated;
+}
+
+@keyframes px-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+
+@keyframes px-sway {
+  0%, 100% { transform: rotate(-6deg); }
+  50% { transform: rotate(6deg); }
+}
+
+@keyframes px-run {
+  0%, 100% { transform: translateY(0); }
+  25% { transform: translateY(-4px); }
+  50% { transform: translateY(0); }
+  75% { transform: translateY(-4px); }
+}
+
+@keyframes px-bloom {
+  0% { transform: scale(0.2) rotate(-20deg); }
+  60% { transform: scale(1.15) rotate(4deg); }
+  100% { transform: scale(1) rotate(0); }
+}
+
+@keyframes px-float {
+  0%, 100% { transform: translateY(0); opacity: 0.9; }
+  50% { transform: translateY(-4px); opacity: 1; }
+}
+
+.px-bob { animation: px-bob 1.6s ease-in-out infinite; }
+.px-delay { animation-delay: 0.8s; }
+.px-sway { animation: px-sway 2.4s ease-in-out infinite; transform-origin: bottom center; }
+.px-run { animation: px-run 0.5s linear infinite; }
+.px-bloom { animation: px-bloom 0.9s ease-out both; }
+
+.px-zzz {
+  display: inline-block;
+  font-family: "Press Start 2P", monospace;
+  font-size: 11px;
+  color: #35507a;
+  animation: px-float 2s ease-in-out infinite;
+}
+
+html[data-lang="pl"] .px-zzz {
+  font-family: system-ui, sans-serif;
+  font-weight: 800;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .px-bob, .px-delay, .px-sway, .px-run, .px-bloom, .px-zzz {
+    animation: none;
+  }
+}
+
+.rpg {
+  background: #fff;
+  border: 3px solid var(--ink);
+  border-radius: 6px;
+  box-shadow: 5px 5px 0 var(--dark-green);
+}
+
+.gbtn {
+  border: 3px solid var(--ink);
+  border-radius: 8px;
+  padding: 10px 16px;
+  font-weight: 800;
+  cursor: pointer;
+  background: var(--green);
+  color: #fff;
+  box-shadow: 3px 3px 0 var(--ink);
+  font-family: inherit;
+}
+
+.gbtn:active:not(:disabled) {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0 var(--ink);
+}
+
+.gbtn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.gbtn.accent {
+  background: var(--accent);
+  color: #4a3400;
+}
+
+.gbtn.ghost {
+  background: #e7f2e9;
+  color: var(--dark-green);
+}
+
+.gbtn.danger {
+  background: #fde8e8;
+  color: #a33;
+}
+
+.mgrid {
+  background: var(--dark-green);
+  border: 4px solid var(--dark-green);
+  border-radius: 10px;
+  box-shadow: 6px 6px 0 rgba(30, 107, 62, 0.35);
+  padding: 6px;
+}
+
+.mcell {
+  border-radius: 4px;
+  min-height: 84px;
+}
+
+.mcell.grass-a {
+  background: #8fd694;
+}
+
+.mcell.grass-b {
+  background: #6fbf73;
+}
+
+.mcell.out {
+  opacity: 0.5;
+}
+
+.mcell.today {
+  outline: 3px solid var(--accent);
+  box-shadow: 0 4px 0 rgba(255, 201, 60, 0.9);
+}
+
+.mchars {
+  display: flex;
+  justify-content: center;
+  gap: 2px;
+}
+
+.xpbar {
+  display: flex;
+  gap: 3px;
+  align-items: center;
+  margin-top: 8px;
+}
+
+.xpbar .seg {
+  flex: 1;
+  height: 14px;
+  background: rgba(255, 255, 255, 0.25);
+  border: 2px solid #fff;
+  border-radius: 4px;
+}
+
+.xpbar .seg.full {
+  background: var(--accent);
+}
+
+.xpline {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 11px;
+}
+
+.quest {
+  margin-top: 12px;
+}
+
+.quest-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.qminis {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.qmini {
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  border: 2px solid var(--ink);
+  background: #cfe8d2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+}
+
+.qmini.flower {
+  background: #ff8fb2;
+  border-color: #a33d5e;
+}
+
+.qmini.zzz {
+  background: #dfe9f5;
+}
+
+.qmini.done-slot {
+  background: #ff8fb2;
+}
+
+.lvup-veil {
+  position: fixed;
+  inset: 0;
+  background: rgba(34, 48, 31, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+  padding: 24px;
+}
+
+.lvup-box {
+  text-align: center;
+  padding: 28px 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}

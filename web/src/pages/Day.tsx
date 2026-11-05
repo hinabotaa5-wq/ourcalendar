@@ -42,7 +42,7 @@ export function DayPage({ role }: { role: Role | null }) {
   }).format(new Date(`${date}T00:00:00.000Z`));
 
   return (
-    <div>
+    <div className="card rpg">
       <p>
         <Link to="/">← {t("navMonth")}</Link>
       </p>

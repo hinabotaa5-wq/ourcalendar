@@ -70,6 +70,17 @@ export interface Strings {
   joining: string;
   inviteFailed: string;
   redeeming: string;
+  levelName: string;
+  xpToNext: string;
+  levelUpTitle: string;
+  questTitle: string;
+  noQuest: string;
+  questComplete: string;
+  questBonus: string;
+  qClearAll: string;
+  qJogOnce: string;
+  qDoneCount: string;
+  qWeekdayOnce: string;
 }
 
 const EN: Strings = {
@@ -130,6 +141,17 @@ const EN: Strings = {
   joining: "Joining…",
   inviteFailed: "Invite failed:",
   redeeming: "Redeeming your invite link…",
+  levelName: "Level",
+  xpToNext: "{n} XP to go",
+  levelUpTitle: "Level up!",
+  questTitle: "Quest",
+  noQuest: "No quest this week",
+  questComplete: "Complete!",
+  questBonus: "+50 XP bonus!",
+  qClearAll: "Clear this week's workouts",
+  qJogOnce: "Do one Jogging this week",
+  qDoneCount: "Done {n} times this week",
+  qWeekdayOnce: "Done on a weekday",
 };
 
 const JA: Strings = {
@@ -190,6 +212,17 @@ const JA: Strings = {
   joining: "参加処理中…",
   inviteFailed: "招待に失敗しました:",
   redeeming: "招待リンクを処理しています…",
+  levelName: "レベル",
+  xpToNext: "あと{n} XP",
+  levelUpTitle: "レベルアップ！",
+  questTitle: "クエスト",
+  noQuest: "今週のクエストはありません",
+  questComplete: "達成！",
+  questBonus: "+50 XP ボーナス！",
+  qClearAll: "今週の運動を全部片づけよう",
+  qJogOnce: "今週ジョギングを1回やろう",
+  qDoneCount: "今週{n}回Doneしよう",
+  qWeekdayOnce: "平日に1回Doneしよう",
 };
 
 const PL: Strings = {
@@ -250,6 +283,17 @@ const PL: Strings = {
   joining: "Dołączanie…",
   inviteFailed: "Zaproszenie nie powiodło się:",
   redeeming: "Realizuję link…",
+  levelName: "Poziom",
+  xpToNext: "jeszcze {n} XP",
+  levelUpTitle: "Nowy poziom!",
+  questTitle: "Misja",
+  noQuest: "Brak misji w tym tygodniu",
+  questComplete: "Ukończona!",
+  questBonus: "Bonus +50 XP!",
+  qClearAll: "Uporządkuj treningi z tego tygodnia",
+  qJogOnce: "Zrób w tym tygodniu jeden jogging",
+  qDoneCount: "Ukończ {n} treningi w tym tygodniu",
+  qWeekdayOnce: "Poćwicz w dzień powszedni",
 };
 
 export const STRINGS: Record<Lang, Strings> = { en: EN, ja: JA, pl: PL };

@@ -1,3 +1,4 @@
+import type { GameView } from "../../shared/game.js";
 import type { CalEvent, Lang, Role, WeightEntry } from "../../shared/types.js";
 
 async function req<T>(path: string, init?: RequestInit): Promise<T> {
@@ -65,6 +66,7 @@ export const api = {
       body: JSON.stringify({ endpoint: sub.endpoint, keys: sub.keys }),
     }),
   testPush: () => req<{ ok: boolean; sent: number; targets: number }>("/api/push/test", { method: "POST" }),
+  game: () => req<GameView>("/api/game"),
   language: () => req<{ language: Lang }>("/api/settings/language"),
   setLanguage: (language: Lang) =>
     req<{ ok: boolean }>("/api/settings/language", {

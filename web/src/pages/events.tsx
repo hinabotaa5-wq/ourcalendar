@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { ALL_DAY_MINUTES } from "../../../shared/birthdays.js";
-import { dualTime } from "../../../shared/time.js";
+import { TIME_ZONES, dualTime, zonedDateKey } from "../../../shared/time.js";
 import type { CalEvent, EventCategory, Role } from "../../../shared/types.js";
 import { api } from "../api.js";
+import { useGame } from "../game.js";
 import { useLang } from "../lang.js";
 
 export const CATS: EventCategory[] = ["Workout", "Jogging", "General"];
@@ -21,12 +22,23 @@ function statusKey(status: CalEvent["status"]): "statusScheduled" | "statusDone"
 
 export function EventCard({ e, role, onChange }: { e: CalEvent; role: Role | null; onChange: () => void }) {
   const { t } = useLang();
+  const { refresh } = useGame();
   const dt = role ? dualTime(e.startsAtUtc, role) : null;
   const [moving, setMoving] = useState(false);
   const [moveTo, setMoveTo] = useState("");
 
+  const todayKey = role ? zonedDateKey(new Date().toISOString(), TIME_ZONES[role]) : null;
+  const doneToday = role !== null && todayKey !== null && zonedDateKey(e.startsAtUtc, TIME_ZONES[role]) === todayKey;
+
   const act = async (action: "done" | "rest" | "move") => {
     await api.eventAction(e.id, action, action === "move" ? new Date(moveTo).toISOString() : undefined);
+    refresh();
+    onChange();
+  };
+
+  const remove = async () => {
+    await api.deleteEvent(e.id);
+    refresh();
     onChange();
   };
 
@@ -66,16 +78,16 @@ export function EventCard({ e, role, onChange }: { e: CalEvent; role: Role | nul
         </p>
       )}
       <div className="row">
-        <button className="pill-btn" onClick={() => void act("done")}>
+        <button className="gbtn" disabled={!doneToday} onClick={() => void act("done")}>
           {t("done")}
         </button>
-        <button className="pill-btn ghost" onClick={() => void act("rest")}>
+        <button className="gbtn ghost" onClick={() => void act("rest")}>
           {t("restToday")}
         </button>
-        <button className="pill-btn ghost" onClick={() => setMoving((v) => !v)}>
+        <button className="gbtn ghost" onClick={() => void setMoving((v) => !v)}>
           {t("move")}
         </button>
-        <button className="pill-btn danger" onClick={() => void api.deleteEvent(e.id).then(onChange)}>
+        <button className="gbtn danger" onClick={() => void remove()}>
           {t("delete")}
         </button>
       </div>
@@ -85,7 +97,7 @@ export function EventCard({ e, role, onChange }: { e: CalEvent; role: Role | nul
             {t("moveTo")}
             <input type="datetime-local" value={moveTo} onChange={(ev) => setMoveTo(ev.target.value)} />
           </label>
-          <button className="pill-btn accent" disabled={!moveTo} onClick={() => void act("move")}>
+          <button className="gbtn accent" disabled={!moveTo} onClick={() => void act("move")}>
             {t("confirmMove")}
           </button>
         </div>
@@ -96,6 +108,7 @@ export function EventCard({ e, role, onChange }: { e: CalEvent; role: Role | nul
 
 export function NewEventForm({ initialDate, onDone }: { initialDate?: string; onDone: () => void }) {
   const { t } = useLang();
+  const { refresh } = useGame();
   const [title, setTitle] = useState("");
   const [cat, setCat] = useState<EventCategory>("Workout");
   const [when, setWhen] = useState(initialDate ? `${initialDate}T18:00` : "");
@@ -117,6 +130,7 @@ export function NewEventForm({ initialDate, onDone }: { initialDate?: string; on
     setWhen(initialDate ? `${initialDate}T18:00` : "");
     setNotes("");
     setVideo("");
+    refresh();
     onDone();
   };
 
@@ -153,7 +167,7 @@ export function NewEventForm({ initialDate, onDone }: { initialDate?: string; on
         {t("fieldVideo")}
         <input value={video} onChange={(e) => setVideo(e.target.value)} placeholder="https://..." />
       </label>
-      <button className="pill-btn accent" onClick={() => void create()}>
+      <button className="gbtn accent" onClick={() => void create()}>
         {t("addEvent")}
       </button>
     </div>

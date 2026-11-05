@@ -8,6 +8,7 @@ import { SIMONE_TZ } from "../../../shared/types.js";
 import type { CalEvent } from "../../../shared/types.js";
 import { api } from "../api.js";
 import { useLang } from "../lang.js";
+import { CakeSprite, FlowerSprite, HinataSprite, RunnerSprite, SimoneSprite, SproutSprite, ZzzSprite } from "../sprites.js";
 import { visibleEvents } from "./events.js";
 
 const SUNDAY = Date.UTC(2026, 10, 1);
@@ -82,22 +83,32 @@ export function MonthPage() {
             {w}
           </div>
         ))}
-        {grid.flat().map((c) => {
+        {grid.flat().map((c, i) => {
           const list = byDay.get(c.date) ?? [];
-          const cats = [...new Set(list.map((e) => e.category))];
           const birthday = list.some((e) => e.id.startsWith("birthday-"));
+          const allDone = list.length > 0 && list.every((e) => e.status === "done" || e.status === "rested");
+          const hasJogging = list.some((e) => e.category === "Jogging");
+          const hasRested = list.some((e) => e.status === "rested");
+          const hasOpen = list.some((e) => e.status === "scheduled");
           return (
-            <Link key={c.date} to={`/day/${c.date}`} className={`mcell${c.inMonth ? "" : " out"}${c.isToday ? " today" : ""}`}>
+            <Link
+              key={c.date}
+              to={`/day/${c.date}`}
+              className={`mcell grass-${i % 2 === Math.floor(i / 7) % 2 ? "a" : "b"}${c.inMonth ? "" : " out"}${c.isToday ? " today" : ""}`}
+            >
               <span className="mnum">{Number(c.date.slice(8))}</span>
+              {c.isToday && (
+                <span className="mchars">
+                  <HinataSprite w={30} />
+                  <SimoneSprite w={30} />
+                </span>
+              )}
               <span className="mdots">
-                {birthday && <span>🎂</span>}
-                {cats.map((cat) => (
-                  <span
-                    key={cat}
-                    className={`mdot ${cat === "Jogging" ? "jog" : cat === "General" ? "gen" : ""}`}
-                    title={cat}
-                  />
-                ))}
+                {birthday && <CakeSprite w={28} />}
+                {allDone && <FlowerSprite w={28} />}
+                {!allDone && hasJogging && <RunnerSprite w={32} />}
+                {!allDone && hasRested && <ZzzSprite />}
+                {!allDone && hasOpen && !hasJogging && <SproutSprite w={24} />}
               </span>
               {list.slice(0, 2).map((e) => (
                 <span key={e.id} className="mtitle">

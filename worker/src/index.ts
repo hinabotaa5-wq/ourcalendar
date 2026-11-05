@@ -16,6 +16,7 @@ import {
 } from "./auth.js";
 import { sendPush } from "./push.js";
 import { getLanguage, runDailyReminder, runWeightReminder } from "./reminders.js";
+import { addXp, doneAllowedFor, syncQuest, xpForDone } from "./game.js";
 
 function validCategory(c: unknown): c is EventCategory {
   return c === "Workout" || c === "Jogging" || c === "General";
@@ -176,6 +177,7 @@ export async function handleFetch(req: Request, env: Env): Promise<Response> {
     }
     if (req.method === "DELETE" && !eventMatch[2]) {
       await env.DB.prepare("DELETE FROM events WHERE id = ?").bind(id).run();
+      await syncQuest(env, new Date(), false);
       return json({ ok: true });
     }
     if (req.method === "POST" && eventMatch[2]) {
@@ -189,6 +191,13 @@ export async function handleFetch(req: Request, env: Env): Promise<Response> {
       else if (action === "move") status = "moved";
       if (!status) return json({ error: "unknown action" }, 400);
       if (status === "moved" && !movedToUtc) return json({ error: "movedToUtc required" }, 400);
+      const target = await env.DB.prepare("SELECT category, starts_at_utc AS startsAtUtc FROM events WHERE id = ?")
+        .bind(id)
+        .first<{ category: string; startsAtUtc: string }>();
+      if (!target) return json({ error: "not found" }, 404);
+      if (status === "done" && !doneAllowedFor(target.startsAtUtc, me.role, new Date())) {
+        return json({ error: "done only allowed for today's events" }, 400);
+      }
       await env.DB.prepare("UPDATE events SET status = ?, moved_to_utc = ?, updated_at_utc = ? WHERE id = ?")
         .bind(status, movedToUtc ?? null, nowIso(), id)
         .run();
@@ -205,8 +214,18 @@ export async function handleFetch(req: Request, env: Env): Promise<Response> {
             .run();
         }
       }
-      return json({ ok: true, status });
+      if (status === "done") {
+        await addXp(env, `done:${id}`, xpForDone(target.category));
+      }
+      const game = await syncQuest(env, new Date(), status === "done");
+      return json({ ok: true, status, game });
     }
+  }
+
+  if (path === "/api/game" && req.method === "GET") {
+    const me = await requireRole(req, env);
+    if (me instanceof Response) return me;
+    return json(await syncQuest(env, new Date(), false));
   }
 
   if (path === "/api/weights" && req.method === "GET") {
