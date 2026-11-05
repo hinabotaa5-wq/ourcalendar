@@ -12,11 +12,11 @@ async function req<T>(path: string, init?: RequestInit): Promise<T> {
 
 export const api = {
   me: () => req<{ role: Role | null }>("/api/me"),
-  redeemInvite: (token: string) =>
+  redeemInvite: (token: string, password: string) =>
     req<{ role: Role }>("/api/invite/redeem", {
       method: "POST",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify({ token }),
+      body: JSON.stringify({ token, password }),
     }),
   sessions: () => req<{ sessions: { id: string; role: Role; createdAt: string; lastSeenAt: string }[] }>("/api/sessions"),
   revokeSession: (id?: string) =>

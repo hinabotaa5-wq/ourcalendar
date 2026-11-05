@@ -5,13 +5,16 @@ import { pushText } from "../../shared/push-texts.js";
 import {
   clearSessionCookie,
   getSessionRole,
+  hashPassword,
   json,
   newId,
+  newPasswordSalt,
   nowIso,
   requireRole,
   requireSimone,
   sessionCookie,
   sha256Hex,
+  verifyPassword,
   type Env,
 } from "./auth.js";
 import { sendPush } from "./push.js";
@@ -35,22 +38,48 @@ export async function handleFetch(req: Request, env: Env): Promise<Response> {
   }
 
   if (path === "/api/invite/redeem" && req.method === "POST") {
-    const { token } = (await req.json().catch(() => ({}))) as { token?: string };
+    const { token, password } = (await req.json().catch(() => ({}))) as {
+      token?: string;
+      password?: string;
+    };
     if (!token) return json({ error: "missing token" }, 400);
     const hash = await sha256Hex(token);
     const inv = await env.DB.prepare(
-      "SELECT id, role, used, revoked FROM invites WHERE token_hash = ?",
+      "SELECT id, role, revoked, password_hash, password_salt, failed_attempts, locked_until FROM invites WHERE token_hash = ?",
     )
       .bind(hash)
-      .first<{ id: string; role: Role; used: number; revoked: number }>();
-    if (!inv || inv.used || inv.revoked) return json({ error: "invalid invite" }, 403);
-    // Atomic claim: only one concurrent redeem can flip used 0 -> 1.
-    const claimed = (await env.DB.prepare(
-      "UPDATE invites SET used = 1, used_at = ? WHERE id = ? AND used = 0 AND revoked = 0",
-    )
-      .bind(nowIso(), inv.id)
-      .run()) as unknown as { meta?: { changes?: number } };
-    if ((claimed.meta?.changes ?? 0) === 0) return json({ error: "invalid invite" }, 403);
+      .first<{
+        id: string;
+        role: Role;
+        revoked: number;
+        password_hash: string | null;
+        password_salt: string | null;
+        failed_attempts: number;
+        locked_until: string | null;
+      }>();
+    if (!inv || inv.revoked) return json({ error: "invalid invite" }, 403);
+    if (inv.password_hash == null || inv.password_salt == null)
+      return json({ error: "password_not_set" }, 403);
+    if (inv.locked_until && Date.parse(inv.locked_until) > Date.now())
+      return json({ error: "locked" }, 429);
+    // The fixed URL stays usable: a correct password logs in without consuming the invite.
+    if (typeof password !== "string" || !(await verifyPassword(password, inv.password_salt, inv.password_hash))) {
+      const fails = (inv.failed_attempts ?? 0) + 1;
+      if (fails >= 10) {
+        const until = new Date(Date.now() + 15 * 60 * 1000).toISOString();
+        await env.DB.prepare("UPDATE invites SET failed_attempts = 0, locked_until = ? WHERE id = ?")
+          .bind(until, inv.id)
+          .run();
+      } else {
+        await env.DB.prepare("UPDATE invites SET failed_attempts = ? WHERE id = ?")
+          .bind(fails, inv.id)
+          .run();
+      }
+      return json({ error: "wrong_password" }, 403);
+    }
+    await env.DB.prepare("UPDATE invites SET failed_attempts = 0, locked_until = NULL WHERE id = ?")
+      .bind(inv.id)
+      .run();
     const sid = newId();
     await env.DB.prepare(
       "INSERT INTO sessions (id, role, created_at, last_seen_at, revoked) VALUES (?, ?, ?, ?, 0)",
@@ -58,6 +87,30 @@ export async function handleFetch(req: Request, env: Env): Promise<Response> {
       .bind(sid, inv.role, nowIso(), nowIso())
       .run();
     return json({ role: inv.role }, 200, { "set-cookie": sessionCookie(sid) });
+  }
+
+  if (path === "/api/invites/password" && req.method === "POST") {
+    if (!env.SETUP_SECRET) return json({ error: "setup disabled" }, 403);
+    if (req.headers.get("x-setup-secret") !== env.SETUP_SECRET) return json({ error: "forbidden" }, 403);
+    const { role, password } = (await req.json().catch(() => ({}))) as {
+      role?: Role;
+      password?: string;
+    };
+    if (role !== "hinata" && role !== "simone") return json({ error: "bad role" }, 400);
+    if (typeof password !== "string" || password.length < 8)
+      return json({ error: "password_too_short" }, 400);
+    const row = await env.DB.prepare("SELECT id FROM invites WHERE role = ? AND revoked = 0")
+      .bind(role)
+      .first<{ id: string }>();
+    if (!row) return json({ error: "no invite for role" }, 404);
+    const salt = newPasswordSalt();
+    const passwordHash = await hashPassword(password, salt);
+    await env.DB.prepare(
+      "UPDATE invites SET password_hash = ?, password_salt = ?, failed_attempts = 0, locked_until = NULL WHERE id = ?",
+    )
+      .bind(passwordHash, salt, row.id)
+      .run();
+    return json({ ok: true });
   }
 
   if (path === "/api/invites" && req.method === "POST") {

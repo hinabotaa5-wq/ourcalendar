@@ -22,6 +22,41 @@ export async function sha256Hex(input: string): Promise<string> {
   return [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, "0")).join("");
 }
 
+const PBKDF2_ITERATIONS = 100_000;
+
+export function newPasswordSalt(): string {
+  const salt = crypto.getRandomValues(new Uint8Array(16));
+  let bin = "";
+  for (const b of salt) bin += String.fromCharCode(b);
+  return btoa(bin);
+}
+
+export async function hashPassword(password: string, saltB64: string): Promise<string> {
+  const salt = Uint8Array.from(atob(saltB64), (c) => c.charCodeAt(0));
+  const key = await crypto.subtle.importKey("raw", new TextEncoder().encode(password), "PBKDF2", false, [
+    "deriveBits",
+  ]);
+  const bits = await crypto.subtle.deriveBits(
+    { name: "PBKDF2", salt, iterations: PBKDF2_ITERATIONS, hash: "SHA-256" },
+    key,
+    256,
+  );
+  return [...new Uint8Array(bits)].map((b) => b.toString(16).padStart(2, "0")).join("");
+}
+
+export function timingSafeEqualHex(a: string, b: string): boolean {
+  const ab = new TextEncoder().encode(a);
+  const bb = new TextEncoder().encode(b);
+  if (ab.length !== bb.length) return false;
+  let diff = 0;
+  for (let i = 0; i < ab.length; i++) diff |= ab[i] ^ bb[i];
+  return diff === 0;
+}
+
+export async function verifyPassword(password: string, saltB64: string, expectedHash: string): Promise<boolean> {
+  return timingSafeEqualHex(await hashPassword(password, saltB64), expectedHash);
+}
+
 export function json(data: unknown, status = 200, headers: Record<string, string> = {}): Response {
   return new Response(JSON.stringify(data), {
     status,

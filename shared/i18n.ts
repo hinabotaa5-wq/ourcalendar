@@ -69,6 +69,11 @@ export interface Strings {
   inviteHint: string;
   joining: string;
   inviteFailed: string;
+  passwordLabel: string;
+  loginButton: string;
+  wrongPassword: string;
+  inviteLocked: string;
+  passwordNotSet: string;
   redeeming: string;
   levelName: string;
   xpToNext: string;
@@ -145,6 +150,11 @@ const EN: Strings = {
   inviteHint: "Open your personal invite link on this device to join. Each link works once.",
   joining: "Joining…",
   inviteFailed: "Invite failed:",
+  passwordLabel: "Password",
+  loginButton: "Log in",
+  wrongPassword: "Wrong password. Try again.",
+  inviteLocked: "Too many wrong attempts. Wait a while and try again.",
+  passwordNotSet: "No password is set for this link yet. Contact Hinata.",
   redeeming: "Redeeming your invite link…",
   levelName: "Level",
   xpToNext: "{n} XP to go",
@@ -221,6 +231,11 @@ const JA: Strings = {
   inviteHint: "あなたの招待リンクをこの端末で開いてください。リンクは1回だけ使えます。",
   joining: "参加処理中…",
   inviteFailed: "招待に失敗しました:",
+  passwordLabel: "パスワード",
+  loginButton: "ログイン",
+  wrongPassword: "パスワードが違います。もう一度試してください。",
+  inviteLocked: "間違いが多すぎます。しばらく待ってから試してください。",
+  passwordNotSet: "このリンクにはまだパスワードが設定されていません。Hinataに連絡してください。",
   redeeming: "招待リンクを処理しています…",
   levelName: "レベル",
   xpToNext: "あと{n} XP",
@@ -297,6 +312,11 @@ const PL: Strings = {
   inviteHint: "Otwórz swój osobisty link z zaproszeniem na tym urządzeniu. Każdy link działa raz.",
   joining: "Dołączanie…",
   inviteFailed: "Zaproszenie nie powiodło się:",
+  passwordLabel: "Hasło",
+  loginButton: "Zaloguj się",
+  wrongPassword: "Błędne hasło. Spróbuj ponownie.",
+  inviteLocked: "Za dużo błędnych prób. Odczekaj chwilę i spróbuj ponownie.",
+  passwordNotSet: "Do tego linku nie ustawiono jeszcze hasła. Skontaktuj się z Hinatą.",
   redeeming: "Realizuję link…",
   levelName: "Poziom",
   xpToNext: "jeszcze {n} XP",

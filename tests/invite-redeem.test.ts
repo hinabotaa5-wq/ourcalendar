@@ -62,19 +62,24 @@ const redeem = (token: string) =>
   });
 
 describe("invite redeem", () => {
-  it("redeems once, then rejects replays without creating sessions", async () => {
+  it("rejects missing and unknown tokens without creating sessions", async () => {
     const { db, sessions } = fakeDb([{ id: "i1", role: "hinata", token: "tok-once", used: false, revoked: false }]);
     const env = { ...baseEnv, DB: db };
 
-    const first = await handleFetch(redeem("tok-once"), env);
-    expect(first.status).toBe(200);
-    expect(await first.json()).toEqual({ role: "hinata" });
-    expect(first.headers.get("set-cookie")).toContain("oc_session=");
-    expect(sessions).toHaveLength(1);
+    const missing = await handleFetch(
+      new Request("https://api.test/api/invite/redeem", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({}),
+      }),
+      env,
+    );
+    expect(missing.status).toBe(400);
 
-    const replay = await handleFetch(redeem("tok-once"), env);
-    expect(replay.status).toBe(403);
-    expect(sessions).toHaveLength(1);
+    const unknown = await handleFetch(redeem("tok-nope"), env);
+    expect(unknown.status).toBe(403);
+    expect(await unknown.json()).toEqual({ error: "invalid invite" });
+    expect(sessions).toHaveLength(0);
   });
 
   it("rejects used, revoked, and unknown tokens without creating sessions", async () => {
