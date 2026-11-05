@@ -145,12 +145,6 @@ html[data-lang="pl"] .navbtn {
   font-size: 13px;
 }
 
-.loginline {
-  font-size: 12px;
-  color: #46624f;
-  margin: 0 0 8px;
-}
-
 .stats {
   background: var(--dark-green);
   color: #fff;

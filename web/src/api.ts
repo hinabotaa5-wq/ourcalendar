@@ -18,7 +18,6 @@ export const api = {
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ token, password }),
     }),
-  sessions: () => req<{ sessions: { id: string; role: Role; createdAt: string; lastSeenAt: string }[] }>("/api/sessions"),
   revokeSession: (id?: string) =>
     req<{ ok: boolean }>("/api/session", {
       method: "DELETE",
