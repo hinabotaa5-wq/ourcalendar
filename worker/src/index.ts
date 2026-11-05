@@ -44,16 +44,19 @@ export async function handleFetch(req: Request, env: Env): Promise<Response> {
       .bind(hash)
       .first<{ id: string; role: Role; used: number; revoked: number }>();
     if (!inv || inv.used || inv.revoked) return json({ error: "invalid invite" }, 403);
+    // Atomic claim: only one concurrent redeem can flip used 0 -> 1.
+    const claimed = (await env.DB.prepare(
+      "UPDATE invites SET used = 1, used_at = ? WHERE id = ? AND used = 0 AND revoked = 0",
+    )
+      .bind(nowIso(), inv.id)
+      .run()) as unknown as { meta?: { changes?: number } };
+    if ((claimed.meta?.changes ?? 0) === 0) return json({ error: "invalid invite" }, 403);
     const sid = newId();
-    await env.DB.batch([
-      env.DB.prepare("UPDATE invites SET used = 1, used_at = ? WHERE id = ?").bind(nowIso(), inv.id),
-      env.DB.prepare("INSERT INTO sessions (id, role, created_at, last_seen_at, revoked) VALUES (?, ?, ?, ?, 0)").bind(
-        sid,
-        inv.role,
-        nowIso(),
-        nowIso(),
-      ),
-    ]);
+    await env.DB.prepare(
+      "INSERT INTO sessions (id, role, created_at, last_seen_at, revoked) VALUES (?, ?, ?, ?, 0)",
+    )
+      .bind(sid, inv.role, nowIso(), nowIso())
+      .run();
     return json({ role: inv.role }, 200, { "set-cookie": sessionCookie(sid) });
   }
 

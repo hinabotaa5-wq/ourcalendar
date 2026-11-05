@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import type { Role } from "../../../shared/types.js";
 import { api } from "../api.js";
@@ -9,17 +9,23 @@ export function InvitePage({ onDone }: { onDone: (r: Role) => void }) {
   const { token } = useParams();
   const nav = useNavigate();
   const [err, setErr] = useState("");
+  // Redeem exactly once per token: parent re-renders must not refire the POST,
+  // or the second call fails with "invalid invite" after the first consumed it.
+  const fired = useRef<string | null>(null);
+  const onDoneRef = useRef(onDone);
+  onDoneRef.current = onDone;
 
   useEffect(() => {
-    if (!token || token === "sample") return;
+    if (!token || token === "sample" || fired.current === token) return;
+    fired.current = token;
     api
       .redeemInvite(token)
       .then((r) => {
-        onDone(r.role);
+        onDoneRef.current(r.role);
         nav("/");
       })
       .catch((e) => setErr((e as Error).message));
-  }, [token, nav, onDone]);
+  }, [token, nav]);
 
   if (token === "sample" || !token) {
     return (
