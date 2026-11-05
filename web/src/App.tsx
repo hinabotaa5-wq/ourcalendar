@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, Route, Routes, useLocation, useNavigate } from "react-router-dom";
+import { Link, Route, Routes, useLocation } from "react-router-dom";
 import { HINATA_TZ, SIMONE_TZ } from "../../shared/types.js";
 import { api } from "./api.js";
 import type { Role } from "../../shared/types.js";
@@ -8,6 +8,7 @@ import { LangProvider, useLang } from "./lang.js";
 import { CalendarPage } from "./pages/Calendar.js";
 import { DayPage } from "./pages/Day.js";
 import { InvitePage } from "./pages/Invite.js";
+import { PasswordLoginForm } from "./pages/PasswordLoginForm.js";
 import { MonthPage } from "./pages/Month.js";
 import { SettingsPage } from "./pages/Settings.js";
 import { WeightPage } from "./pages/Weight.js";
@@ -108,7 +109,6 @@ function Shell() {
   const [role, setRole] = useState<Role | null | undefined>(undefined);
   const now = useNow();
   const loc = useLocation();
-  const nav = useNavigate();
 
   useEffect(() => {
     document.documentElement.dataset.lang = lang;
@@ -121,10 +121,6 @@ function Shell() {
       .catch(() => setRole(null));
     refresh();
   }, [loc.pathname, refresh]);
-
-  useEffect(() => {
-    if (role === null && !loc.pathname.startsWith("/invite")) nav("/invite/sample");
-  }, [role, loc.pathname, nav]);
 
   const lvl = game?.level;
   const segs = 10;
@@ -180,14 +176,25 @@ function Shell() {
           </Link>
         </nav>
       )}
-      <Routes>
-        <Route path="/" element={<MonthPage />} />
-        <Route path="/week" element={<CalendarPage role={role ?? null} />} />
-        <Route path="/day/:date" element={<DayPage role={role ?? null} />} />
-        <Route path="/weight" element={<WeightPage role={role ?? null} />} />
-        <Route path="/settings" element={<SettingsPage />} />
-        <Route path="/invite/:token" element={<InvitePage onDone={(r) => setRole(r)} />} />
-      </Routes>
+      {role === null && !loc.pathname.startsWith("/invite") ? (
+        <PasswordLoginForm
+          title={t("joining")}
+          submit={(password) => api.login(password)}
+          onDone={(r) => {
+            setRole(r);
+            refresh();
+          }}
+        />
+      ) : (
+        <Routes>
+          <Route path="/" element={<MonthPage />} />
+          <Route path="/week" element={<CalendarPage role={role ?? null} />} />
+          <Route path="/day/:date" element={<DayPage role={role ?? null} />} />
+          <Route path="/weight" element={<WeightPage role={role ?? null} />} />
+          <Route path="/settings" element={<SettingsPage />} />
+          <Route path="/invite/:token" element={<InvitePage onDone={(r) => setRole(r)} />} />
+        </Routes>
+      )}
       <LevelUpVeil />
     </div>
   );

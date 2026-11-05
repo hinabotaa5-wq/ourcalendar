@@ -8,7 +8,7 @@ import { stdin as input, stdout as output } from "node:process";
 const role = process.argv.includes("--role") ? process.argv[process.argv.indexOf("--role") + 1] : "simone";
 const workerUrl = process.env.WORKER_URL;
 const setupSecret = process.env.SETUP_SECRET;
-const appOriginNote = "https://ourcalendar-1ze.pages.dev";
+const appOriginNote = "https://ourcalendar-1ze.pages.dev/";
 if (!workerUrl || !setupSecret) {
   console.error("Set WORKER_URL and SETUP_SECRET env vars.");
   process.exit(1);
@@ -79,4 +79,4 @@ if (!res.ok) {
   console.error("Failed:", data);
   process.exit(1);
 }
-console.log(`Password set for role: ${role} (login URL stays ${appOriginNote}/invite/<token>)`);
+console.log(`Password set for role: ${role} (log in at ${appOriginNote} with this password)`);

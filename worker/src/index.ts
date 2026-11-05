@@ -89,6 +89,59 @@ export async function handleFetch(req: Request, env: Env): Promise<Response> {
     return json({ role: inv.role }, 200, { "set-cookie": sessionCookie(sid) });
   }
 
+  if (path === "/api/login" && req.method === "POST") {
+    const { password } = (await req.json().catch(() => ({}))) as { password?: string };
+    if (typeof password !== "string") return json({ error: "wrong_password" }, 403);
+    const listed = await env.DB.prepare(
+      "SELECT id, role, password_hash, password_salt, failed_attempts, locked_until FROM invites WHERE revoked = 0 AND password_hash IS NOT NULL",
+    ).all<{
+      id: string;
+      role: Role;
+      password_hash: string;
+      password_salt: string;
+      failed_attempts: number;
+      locked_until: string | null;
+    }>();
+    // Fixed hinata -> simone order so a shared legacy password resolves deterministically.
+    const cands = (listed.results ?? [])
+      .slice()
+      .sort((a, b) => (a.role === "hinata" ? 0 : 1) - (b.role === "hinata" ? 0 : 1));
+    if (cands.length === 0) return json({ error: "password_not_set" }, 403);
+    const locked = (c: (typeof cands)[number]) => !!c.locked_until && Date.parse(c.locked_until) > Date.now();
+    for (const c of cands) {
+      if (locked(c) && (await verifyPassword(password, c.password_salt, c.password_hash)))
+        return json({ error: "locked" }, 429);
+    }
+    for (const c of cands) {
+      if (!locked(c) && (await verifyPassword(password, c.password_salt, c.password_hash))) {
+        await env.DB.prepare("UPDATE invites SET failed_attempts = 0, locked_until = NULL WHERE id = ?")
+          .bind(c.id)
+          .run();
+        const sid = newId();
+        await env.DB.prepare(
+          "INSERT INTO sessions (id, role, created_at, last_seen_at, revoked) VALUES (?, ?, ?, ?, 0)",
+        )
+          .bind(sid, c.role, nowIso(), nowIso())
+          .run();
+        return json({ role: c.role }, 200, { "set-cookie": sessionCookie(sid) });
+      }
+    }
+    for (const c of cands) {
+      const fails = (c.failed_attempts ?? 0) + 1;
+      if (fails >= 10) {
+        const until = new Date(Date.now() + 15 * 60 * 1000).toISOString();
+        await env.DB.prepare("UPDATE invites SET failed_attempts = 0, locked_until = ? WHERE id = ?")
+          .bind(until, c.id)
+          .run();
+      } else {
+        await env.DB.prepare("UPDATE invites SET failed_attempts = ? WHERE id = ?")
+          .bind(fails, c.id)
+          .run();
+      }
+    }
+    return json({ error: "wrong_password" }, 403);
+  }
+
   if (path === "/api/invites/password" && req.method === "POST") {
     if (!env.SETUP_SECRET) return json({ error: "setup disabled" }, 403);
     if (req.headers.get("x-setup-secret") !== env.SETUP_SECRET) return json({ error: "forbidden" }, 403);
@@ -99,6 +152,17 @@ export async function handleFetch(req: Request, env: Env): Promise<Response> {
     if (role !== "hinata" && role !== "simone") return json({ error: "bad role" }, 400);
     if (typeof password !== "string" || password.length < 8)
       return json({ error: "password_too_short" }, 400);
+    // With a single login URL the password alone identifies the role,
+    // so it must not match the other role's current password.
+    const others = await env.DB.prepare(
+      "SELECT password_hash, password_salt FROM invites WHERE role != ? AND revoked = 0 AND password_hash IS NOT NULL",
+    )
+      .bind(role)
+      .all<{ password_hash: string; password_salt: string }>();
+    for (const o of others.results ?? []) {
+      if (await verifyPassword(password, o.password_salt, o.password_hash))
+        return json({ error: "password_conflict" }, 400);
+    }
     const row = await env.DB.prepare("SELECT id FROM invites WHERE role = ? AND revoked = 0")
       .bind(role)
       .first<{ id: string }>();
