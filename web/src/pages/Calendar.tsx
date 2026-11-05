@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { ALL_DAY_MINUTES, birthdayEventsForRange } from "../../../shared/birthdays.js";
 import { dualTime, formatInZone } from "../../../shared/time.js";
 import { HINATA_TZ, SIMONE_TZ } from "../../../shared/types.js";
 import type { CalEvent, EventCategory, Role } from "../../../shared/types.js";
@@ -38,8 +39,13 @@ function EventCard({ e, role, onChange }: { e: CalEvent; role: Role | null; onCh
       </span>{" "}
       <span className="badge">{e.status}</span>
       <h3 style={{ margin: "8px 0" }}>{e.title}</h3>
-      {dt && (
-        <div className="dual">
+      {e.durationMin >= ALL_DAY_MINUTES ? (
+        <p>
+          <span className="badge">All day</span> <span className="muted">{dt?.mine.date}</span>
+        </p>
+      ) : (
+        dt && (
+          <div className="dual">
           <span className="mine">
             {dt.mine.time} <small className="muted">{dt.mine.label}</small>
           </span>
@@ -48,9 +54,11 @@ function EventCard({ e, role, onChange }: { e: CalEvent; role: Role | null; onCh
           </span>
           {dt.dayOffsetNote && <span className="day-note">{dt.dayOffsetNote}</span>}
         </div>
+        )
       )}
       <p className="muted">
-        {e.durationMin} min{e.notes ? ` · ${e.notes}` : ""}
+        {e.durationMin >= ALL_DAY_MINUTES ? "All day" : `${e.durationMin} min`}
+        {e.notes ? ` · ${e.notes}` : ""}
       </p>
       {e.videoUrl && (
         <p>
@@ -103,7 +111,10 @@ export function CalendarPage({ role }: { role: Role | null }) {
   const [video, setVideo] = useState("");
 
   const load = () => {
-    api.events(range.from, range.to).then((r) => setEvents(visibleEvents(r.events))).catch(() => {});
+    api
+      .events(range.from, range.to)
+      .then((r) => setEvents(visibleEvents([...r.events, ...birthdayEventsForRange(range.from, range.to)])))
+      .catch(() => {});
   };
   useEffect(load, [range.from, range.to]);
 
