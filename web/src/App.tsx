@@ -176,7 +176,9 @@ function Shell() {
           </Link>
         </nav>
       )}
-      {role === null && !loc.pathname.startsWith("/invite") ? (
+      {role === undefined && !loc.pathname.startsWith("/invite") ? (
+        <p className="muted">{t("loading")}</p>
+      ) : role === null && !loc.pathname.startsWith("/invite") ? (
         <PasswordLoginForm
           title={t("joining")}
           submit={(password) => api.login(password)}

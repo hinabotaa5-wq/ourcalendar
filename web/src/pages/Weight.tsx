@@ -23,7 +23,6 @@ function WeightHistoryChart({ weights }: { weights: WeightEntry[] }) {
   const latest = points[points.length - 1];
   const first = points[0];
   const line = points.map((p) => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(" ");
-  const labelY = Math.max(latest.y - 10, 12);
   return (
     <svg
       viewBox={`0 0 ${GRAPH_W} ${GRAPH_H}`}
@@ -61,14 +60,14 @@ function WeightHistoryChart({ weights }: { weights: WeightEntry[] }) {
           <g key={p.entry.id}>
             <rect x={p.x - 4.5} y={p.y - 4.5} width={9} height={9} fill={DARK_GREEN} stroke="#fff" strokeWidth={1} />
             <text
-              x={points.length === 1 ? p.x : p.x - 9}
-              y={points.length === 1 ? p.y - 10 : labelY}
+              x={points.length === 1 ? p.x : p.x + 9}
+              y={points.length === 1 ? p.y - 10 : p.y + 4}
               fontSize={11}
               fontWeight={700}
               fill={DARK_GREEN}
-              textAnchor={points.length === 1 ? "middle" : "end"}
+              textAnchor={points.length === 1 ? "middle" : "start"}
             >
-              {p.entry.valueKg} kg
+              {points.length === 1 ? `${p.entry.valueKg} kg` : p.entry.valueKg}
             </text>
           </g>
         ) : (
