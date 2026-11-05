@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { dualTime, formatDayOffset, formatInZone } from "../shared/time.js";
+import { dualTime, formatDayOffset, formatInZone, isSimoneReminderMinute, isSimoneWeightMinute } from "../shared/time.js";
 
 describe("timezone conversion", () => {
   it("winter: JST is UTC+9, Germany is UTC+1", () => {
@@ -35,5 +35,19 @@ describe("timezone conversion", () => {
     expect(formatDayOffset(0)).toBeNull();
     expect(formatDayOffset(2)).toBe("+2 days");
     expect(formatDayOffset(-1)).toBe("-1 day");
+  });
+});
+
+describe("cron time gates (Simone's local time)", () => {
+  it("reminder gate opens during the 15:00 hour, winter and summer", () => {
+    expect(isSimoneReminderMinute(new Date("2026-01-15T14:00:00.000Z"))).toBe(true);
+    expect(isSimoneReminderMinute(new Date("2026-07-15T13:00:00.000Z"))).toBe(true);
+    expect(isSimoneReminderMinute(new Date("2026-01-15T15:00:00.000Z"))).toBe(false);
+  });
+
+  it("weight gate opens only on Saturday in the 19:00 hour", () => {
+    expect(isSimoneWeightMinute(new Date("2026-11-07T18:30:00.000Z"))).toBe(true);
+    expect(isSimoneWeightMinute(new Date("2026-11-07T17:30:00.000Z"))).toBe(false);
+    expect(isSimoneWeightMinute(new Date("2026-11-08T18:30:00.000Z"))).toBe(false);
   });
 });

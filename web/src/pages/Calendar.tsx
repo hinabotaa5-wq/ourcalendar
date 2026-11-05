@@ -15,6 +15,12 @@ function weekRange(offset: number): { from: string; to: string; label: string } 
 
 const CATS: EventCategory[] = ["Workout", "Jogging", "General"];
 
+// Week view hides moved-away history rows. Data stays in the DB;
+// only the "scheduled" (and terminal done/rested) rows are shown.
+export function visibleEvents(events: CalEvent[]): CalEvent[] {
+  return events.filter((e) => e.status !== "moved");
+}
+
 function EventCard({ e, role, onChange }: { e: CalEvent; role: Role | null; onChange: () => void }) {
   const dt = role ? dualTime(e.startsAtUtc, role) : null;
   const [moving, setMoving] = useState(false);
@@ -97,7 +103,7 @@ export function CalendarPage({ role }: { role: Role | null }) {
   const [video, setVideo] = useState("");
 
   const load = () => {
-    api.events(range.from, range.to).then((r) => setEvents(r.events)).catch(() => {});
+    api.events(range.from, range.to).then((r) => setEvents(visibleEvents(r.events))).catch(() => {});
   };
   useEffect(load, [range.from, range.to]);
 
