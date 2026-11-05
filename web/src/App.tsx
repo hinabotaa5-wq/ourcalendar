@@ -139,11 +139,11 @@ function Shell() {
         </div>
         <div className="clocks">
           <div className="clock">
-            {t("timeLabelHinata")}
+            <span className="cname">{t("timeLabelHinata")}</span>
             <b>{clock(now, HINATA_TZ)}</b>
           </div>
           <div className="clock">
-            {t("timeLabelSimone")}
+            <span className="cname">{t("timeLabelSimone")}</span>
             <b>{clock(now, SIMONE_TZ)}</b>
           </div>
         </div>

@@ -23,7 +23,8 @@ body {
   margin: 0;
   background: #14532d;
   color: var(--ink);
-  font-family: "DotGothic16", sans-serif;
+  font-family: "M PLUS Rounded 1c", sans-serif;
+  font-weight: 700;
   display: flex;
   justify-content: center;
   padding: 14px 8px 30px;
@@ -40,16 +41,24 @@ a {
 h1,
 h2,
 h3 {
-  font-family: "Press Start 2P", "DotGothic16", monospace;
+  font-family: "Press Start 2P", "M PLUS Rounded 1c", monospace;
 }
 
-html[data-lang="pl"] body,
+html[data-lang="pl"] body {
+  font-family: system-ui, -apple-system, sans-serif;
+  font-weight: 700;
+}
+
 html[data-lang="pl"] h1,
 html[data-lang="pl"] h2,
 html[data-lang="pl"] h3,
 html[data-lang="pl"] .pix,
+html[data-lang="pl"] .mhead,
+html[data-lang="pl"] .mcell .dnum,
+html[data-lang="pl"] .badge,
 html[data-lang="pl"] .px-zzz {
   font-family: system-ui, -apple-system, sans-serif;
+  font-weight: 700;
 }
 
 .app {
@@ -70,7 +79,7 @@ header {
 }
 
 .logo {
-  font-size: 15px;
+  font-size: 14px;
   color: var(--dark-green);
   letter-spacing: 1px;
 }
@@ -91,6 +100,35 @@ header {
   font-size: 12px;
   line-height: 1.25;
   text-align: center;
+  white-space: nowrap;
+}
+
+.clock .cname {
+  display: block;
+  white-space: nowrap;
+}
+
+html[data-lang="pl"] .navbtn {
+  font-size: 14px;
+}
+
+/* Narrow phones: keep the header on one row without shrinking clock times. */
+@media (max-width: 480px) {
+  .logo {
+    font-size: 12px;
+  }
+
+  .clocks {
+    gap: 4px;
+  }
+
+  .clock {
+    padding: 3px 5px;
+  }
+
+  .clock .cname {
+    font-size: 10px;
+  }
 }
 
 .clock b {
@@ -227,13 +265,14 @@ header {
 
 .navbtn {
   flex: 1;
+  min-width: 0;
   text-align: center;
   text-decoration: none;
   background: #fff;
   border: 3px solid var(--ink);
   box-shadow: 2px 2px 0 var(--ink);
   padding: 8px 0;
-  font-size: 13px;
+  font-size: 15px;
   color: var(--ink);
   cursor: pointer;
   font-family: inherit;
@@ -445,7 +484,8 @@ html[data-lang="pl"] .badge {
   border: 3px solid var(--ink);
   box-shadow: 3px 3px 0 var(--ink);
   background: #fff;
-  font-family: "DotGothic16", sans-serif;
+  font-family: "M PLUS Rounded 1c", sans-serif;
+  font-weight: 700;
   font-size: 16px;
   padding: 9px 14px;
   cursor: pointer;
@@ -455,6 +495,7 @@ html[data-lang="pl"] .badge {
 html[data-lang="pl"] .gbtn,
 html[data-lang="pl"] .pbtn {
   font-family: system-ui, -apple-system, sans-serif;
+  font-weight: 700;
 }
 
 .gbtn:active:not(:disabled),
@@ -508,6 +549,7 @@ textarea {
   margin: 4px 0 10px;
   background: #fff;
   font-family: inherit;
+  font-weight: 700;
 }
 
 label {
