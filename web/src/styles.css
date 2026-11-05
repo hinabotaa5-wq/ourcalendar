@@ -109,7 +109,7 @@ header {
 }
 
 html[data-lang="pl"] .navbtn {
-  font-size: 14px;
+  font-size: 13px;
 }
 
 /* Narrow phones: keep the header on one row without shrinking clock times. */
