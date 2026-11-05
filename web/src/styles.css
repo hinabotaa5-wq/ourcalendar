@@ -336,6 +336,14 @@ html[data-lang="pl"] .navbtn {
   gap: 4px;
 }
 
+.legend .px-bob,
+.legend .px-sway,
+.legend .px-run,
+.legend .px-float,
+.legend .px-bloom {
+  animation: none;
+}
+
 .mhead {
   text-align: center;
   font-size: 10px;
