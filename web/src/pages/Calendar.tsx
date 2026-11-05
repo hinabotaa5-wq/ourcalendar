@@ -17,7 +17,7 @@ function weekRange(offset: number): { from: string; to: string; label: string } 
 }
 
 export function CalendarPage({ role }: { role: Role | null }) {
-  const { t } = useLang();
+  const { lang, t } = useLang();
   const [offset, setOffset] = useState(0);
   const range = useMemo(() => weekRange(offset), [offset]);
   const [events, setEvents] = useState<CalEvent[]>([]);
@@ -25,7 +25,7 @@ export function CalendarPage({ role }: { role: Role | null }) {
   const load = () => {
     api
       .events(range.from, range.to)
-      .then((r) => setEvents(visibleEvents([...r.events, ...birthdayEventsForRange(range.from, range.to)])))
+      .then((r) => setEvents(visibleEvents([...r.events, ...birthdayEventsForRange(range.from, range.to, lang)])))
       .catch(() => {});
   };
   useEffect(load, [range.from, range.to]);

@@ -39,7 +39,7 @@ export function MonthPage() {
     const to = new Date(new Date(`${last}T00:00:00.000Z`).getTime() + 86400000).toISOString();
     api
       .events(from, to)
-      .then((r) => setEvents(visibleEvents([...r.events, ...birthdayEventsForRange(from, to)])))
+      .then((r) => setEvents(visibleEvents([...r.events, ...birthdayEventsForRange(from, to, lang)])))
       .catch(() => {});
   }, [grid]);
 

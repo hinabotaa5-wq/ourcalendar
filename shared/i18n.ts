@@ -81,6 +81,11 @@ export interface Strings {
   qJogOnce: string;
   qDoneCount: string;
   qWeekdayOnce: string;
+  timeLabelSimone: string;
+  timeLabelHinata: string;
+  loggedInAs: string;
+  birthdayHinata: string;
+  birthdaySimone: string;
 }
 
 const EN: Strings = {
@@ -152,6 +157,11 @@ const EN: Strings = {
   qJogOnce: "Do one Jogging this week",
   qDoneCount: "Done {n} times this week",
   qWeekdayOnce: "Done on a weekday",
+  timeLabelSimone: "Simone's time",
+  timeLabelHinata: "Hinata's time",
+  loggedInAs: "Logged in as {name}",
+  birthdayHinata: "Hinata's birthday",
+  birthdaySimone: "Simone's birthday",
 };
 
 const JA: Strings = {
@@ -223,6 +233,11 @@ const JA: Strings = {
   qJogOnce: "今週ジョギングを1回やろう",
   qDoneCount: "今週{n}回Doneしよう",
   qWeekdayOnce: "平日に1回Doneしよう",
+  timeLabelSimone: "Simoneの時間",
+  timeLabelHinata: "Hinataの時間",
+  loggedInAs: "{name}でログイン中",
+  birthdayHinata: "Hinataの誕生日",
+  birthdaySimone: "Simoneの誕生日",
 };
 
 const PL: Strings = {
@@ -294,6 +309,11 @@ const PL: Strings = {
   qJogOnce: "Zrób w tym tygodniu jeden jogging",
   qDoneCount: "Ukończ {n} treningi w tym tygodniu",
   qWeekdayOnce: "Poćwicz w dzień powszedni",
+  timeLabelSimone: "Czas Simone",
+  timeLabelHinata: "Czas Hinaty",
+  loggedInAs: "Zalogowano jako {name}",
+  birthdayHinata: "Urodziny Hinaty",
+  birthdaySimone: "Urodziny Simone",
 };
 
 export const STRINGS: Record<Lang, Strings> = { en: EN, ja: JA, pl: PL };

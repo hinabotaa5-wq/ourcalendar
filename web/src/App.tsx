@@ -137,15 +137,24 @@ function Shell() {
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12 }}>
           <h1>ourcalendar</h1>
           <div className="clocks">
-            <span className="clock-badge">Hinata {clock(now, HINATA_TZ)}</span>
-            <span className="clock-badge">Simone {clock(now, SIMONE_TZ)}</span>
+            <span className="clock-badge">
+              {t("timeLabelHinata")} {clock(now, HINATA_TZ)}
+            </span>
+            <span className="clock-badge">
+              {t("timeLabelSimone")} {clock(now, SIMONE_TZ)}
+            </span>
           </div>
         </div>
+        {role && (
+          <div style={{ marginTop: 8 }}>
+            <span className="clock-badge">{t("loggedInAs", { name: role === "hinata" ? "Hinata" : "Simone" })}</span>
+          </div>
+        )}
         {lvl && (
           <div style={{ marginTop: 10 }}>
             <div className="xpline">
               <strong>
-                {t("levelName")} {lvl.level}
+                XP {game?.totalXp ?? 0} · {t("levelName")} {lvl.level}
               </strong>
               <span>{t("xpToNext", { n: lvl.remaining })}</span>
             </div>

@@ -41,4 +41,13 @@ describe("yearly birthdays", () => {
   it("shows nothing in weeks without birthdays", () => {
     expect(birthdayEventsForRange("2026-11-09T00:00:00.000Z", "2026-11-16T00:00:00.000Z")).toHaveLength(0);
   });
+
+  it("localizes generated birthday titles per language", () => {
+    const range = ["2026-02-09T00:00:00.000Z", "2026-02-16T00:00:00.000Z"] as const;
+    expect(birthdayEventsForRange(...range, "en")[0].title).toBe("Simone's birthday");
+    expect(birthdayEventsForRange(...range, "ja")[0].title).toBe("Simoneの誕生日");
+    expect(birthdayEventsForRange(...range, "pl")[0].title).toBe("Urodziny Simone");
+    const may = ["2026-05-04T00:00:00.000Z", "2026-05-11T00:00:00.000Z"] as const;
+    expect(birthdayEventsForRange(...may, "pl")[0].title).toBe("Urodziny Hinaty");
+  });
 });

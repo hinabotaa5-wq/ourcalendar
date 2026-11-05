@@ -24,7 +24,7 @@ export function DayPage({ role }: { role: Role | null }) {
       .events(from, to)
       .then((r) =>
         setEvents(
-          visibleEvents([...r.events, ...birthdayEventsForRange(from, to)]).filter(
+          visibleEvents([...r.events, ...birthdayEventsForRange(from, to, lang)]).filter(
             (e) => zonedDateKey(e.startsAtUtc, SIMONE_TZ) === date,
           ),
         ),
