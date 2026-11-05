@@ -19,6 +19,11 @@
   -webkit-tap-highlight-color: transparent;
 }
 
+html,
+body {
+  touch-action: manipulation;
+}
+
 body {
   margin: 0;
   background: #14532d;

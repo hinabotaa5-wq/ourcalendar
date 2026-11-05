@@ -148,11 +148,6 @@ function Shell() {
           </div>
         </div>
       </header>
-      {role && (
-        <p className="loginline">
-          {t("loggedInAs", { name: role === "hinata" ? "Hinata" : "Simone" })}
-        </p>
-      )}
       {lvl && (
         <div className="stats">
           <div className="lvbadge pix">Lv.{lvl.level}</div>

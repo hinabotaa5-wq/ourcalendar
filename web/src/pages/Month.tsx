@@ -113,7 +113,7 @@ export function MonthPage() {
                 )}
                 {!allDone && hasJogging && <RunnerSprite scale={3} />}
                 {!allDone && hasRested && <ZzzSprite scale={2} />}
-                {!allDone && hasOpen && !hasJogging && <SproutSprite scale={2} />}
+                {!allDone && hasOpen && !hasJogging && <SproutSprite scale={3} />}
               </span>
               {list.length > 2 && <span className="mtitle">+{list.length - 2}</span>}
             </Link>
