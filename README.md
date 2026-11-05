@@ -52,9 +52,11 @@ Cron (`0 * * * *`, hourly; the worker sends only when it is 15:00 / Saturday 19:
 One single-use invite per person. With the Worker running:
 
 ```sh
-WORKER_URL=https://<your-worker> SETUP_SECRET=<name-only-ref> npm run invite -- --role simone
-WORKER_URL=https://<your-worker> SETUP_SECRET=<name-only-ref> npm run invite -- --role hinata
+WORKER_URL=https://<your-worker> SETUP_SECRET=<name-only-ref> APP_ORIGIN=https://<your-app> npm run invite -- --role simone
+WORKER_URL=https://<your-worker> SETUP_SECRET=<name-only-ref> APP_ORIGIN=https://<your-app> npm run invite -- --role hinata
 ```
+
+`WORKER_URL` is the API target for `POST /api/invites`; the printed link uses `APP_ORIGIN` (the Pages app origin, default `https://ourcalendar-1ze.pages.dev`) because users open the invite in the app.
 
 Each command prints a one-time `/invite/<token>` URL. Opening it on a phone binds a long-lived session to that device. Sessions (either device) can be revoked from Settings → Sessions, which signs the other device out.
 
