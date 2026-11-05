@@ -403,6 +403,11 @@ html[data-lang="pl"] .mcell .dnum {
   margin-left: -13px;
 }
 
+.mchars > *:first-child {
+  position: relative;
+  z-index: 1;
+}
+
 .mcell .spr {
   position: absolute;
   left: 50%;
@@ -569,8 +574,13 @@ textarea {
 }
 
 input[type="datetime-local"] {
+  -webkit-appearance: none;
+  appearance: none;
+  display: block;
+  width: 100%;
   min-width: 0;
   max-width: 100%;
+  box-sizing: border-box;
 }
 
 label {

@@ -1,17 +1,10 @@
-import { useEffect, useState } from "react";
-import type { Role } from "../../../shared/types.js";
+import { useState } from "react";
 import { api, urlBase64ToU8 } from "../api.js";
 import { langOptions, useLang } from "../lang.js";
 
 export function SettingsPage() {
   const { lang, setLang, t } = useLang();
-  const [sessions, setSessions] = useState<{ id: string; role: Role; createdAt: string; lastSeenAt: string }[]>([]);
   const [msg, setMsg] = useState("");
-
-  const load = () => {
-    api.sessions().then((r) => setSessions(r.sessions)).catch(() => {});
-  };
-  useEffect(load, []);
 
   const enablePush = async () => {
     try {
@@ -64,26 +57,6 @@ export function SettingsPage() {
           </button>
         </div>
         {msg && <p className="muted">{msg}</p>}
-      </div>
-      <div className="card">
-        <h3 style={{ marginTop: 0 }}>{t("sessions")}</h3>
-        <p className="muted">{t("sessionsHint")}</p>
-        {sessions.map((s) => (
-          <p key={s.id}>
-            {s.role} · {s.id.slice(0, 8)}…{" "}
-            <button
-              className="gbtn danger"
-              onClick={() =>
-                void api.revokeSession(s.id).then(() => {
-                  setMsg(t("sessionRevoked"));
-                  load();
-                })
-              }
-            >
-              {t("revoke")}
-            </button>
-          </p>
-        ))}
       </div>
     </div>
   );
