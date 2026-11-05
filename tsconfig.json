@@ -15,5 +15,5 @@
     "noUnusedParameters": true,
     "types": ["vite/client"]
   },
-  "include": ["web/src", "worker/src", "worker/scripts", "shared", "tests"]
+  "include": ["web/src", "worker/src", "worker/scripts", "shared", "tests", "functions"]
 }

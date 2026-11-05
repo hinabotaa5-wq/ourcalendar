@@ -45,7 +45,7 @@ Frontend needs no secrets. The VAPID public key is served to the app via `GET /a
 4. `npx wrangler deploy` (API + cron)
 5. Deploy `web/` to Cloudflare Pages (build: `npm run build`, output `web/dist`)
 
-Cron (`15 * * * *`, hourly) sends the 15:00 Simone-time workout reminder and the Saturday 19:00 weight check-in reminder. No real push is sent from tests (mocked).
+Cron (`0 * * * *`, hourly; the worker sends only when it is 15:00 / Saturday 19:00 in Simone's time) sends the 15:00 Simone-time workout reminder and the Saturday 19:00 weight check-in reminder. No real push is sent from tests (mocked).
 
 ## Issuing invite links
 
